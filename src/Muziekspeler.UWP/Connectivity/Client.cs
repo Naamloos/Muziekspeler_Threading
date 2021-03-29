@@ -34,7 +34,7 @@ namespace Muziekspeler.UWP.Connectivity
 
         }
 
-        private async Task handlePacketAsync(Packet packet)
+        private async Task handlePacketAsync(Packet packet) // TODO add behavior
         {
             object data = null;
             switch (packet.Type)

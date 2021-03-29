@@ -98,7 +98,8 @@ namespace Muziekspeler.Common
 
         private void handleMedia(byte[] data)
         {
-            _ = Task.Run(async () => await this.MediaReceived(data));
+            if(this.MediaReceived != null)
+                _ = Task.Run(async () => await this.MediaReceived(data));
         }
     }
 }

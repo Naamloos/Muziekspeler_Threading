@@ -11,6 +11,6 @@ namespace Muziekspeler.Common.Packets
         public string DisplayName;
 
         [JsonProperty]
-        public string Password;
+        public string Status;
     }
 }
