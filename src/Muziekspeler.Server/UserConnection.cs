@@ -13,10 +13,27 @@ namespace Muziekspeler.Server
     {
         public Connection Connection;
         public User User;
+        public int MissedKeepalives = 0;
 
         public UserConnection(TcpClient client)
         {
             Connection = new Connection(client, handlePacketAsync, null);
+        }
+
+        public async Task KeepAliveAsync()
+        {
+            this.MissedKeepalives++;
+            await Connection.SendPacketAsync(new Packet(PacketType.KeepAlive, null));
+        }
+
+        public async Task SendId(int id)
+        {
+            await Connection.SendPacketAsync(new Packet(PacketType.UserId, new UserIdData() { Id = id }));
+        }
+
+        public void Disconnect()
+        {
+            Connection.StopClientLoop();
         }
 
         private async Task handlePacketAsync(Packet packet) // TODO add behavior
@@ -50,6 +67,7 @@ namespace Muziekspeler.Server
 
                 case PacketType.KeepAlive:
                     // Just a keepalive, needs no data
+                    this.MissedKeepalives = 0;
                     break;
 
                 case PacketType.PlayMusic:

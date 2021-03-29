@@ -64,6 +64,7 @@ namespace Muziekspeler.Common
         public void StopClientLoop()
         {
             cancellation.Cancel();
+            packetStream.Close();
         }
 
         public async Task SendPacketAsync(Packet packet)
