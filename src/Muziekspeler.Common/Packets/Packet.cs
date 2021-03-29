@@ -28,7 +28,6 @@ namespace Muziekspeler.Common.Packets
         ClearQueue,
         SkipSong,
         CreateRoom,
-        SetUserData,
-        SetMediaPort
+        SetUserData
     }
 }
