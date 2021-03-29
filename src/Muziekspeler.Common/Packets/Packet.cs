@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +8,10 @@ namespace Muziekspeler.Common.Packets
 {
     public struct Packet
     {
+        [JsonProperty]
         public PacketType Type;
+
+        [JsonProperty]
         public JObject Data;
     }
 
@@ -24,6 +28,7 @@ namespace Muziekspeler.Common.Packets
         ClearQueue,
         SkipSong,
         CreateRoom,
-        SetUserData
+        SetUserData,
+        SetMediaPort
     }
 }
