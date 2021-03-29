@@ -34,11 +34,12 @@ namespace Muziekspeler.UWP.Connectivity
 
         }
 
-        private async Task handlePacketAsync(Packet packet)
+        private async Task handlePacketAsync(Packet packet) // TODO add behavior
         {
             object data = null;
             switch (packet.Type)
             {
+                // After the data object is set you might need type casting to get its data.
                 default:
                     throw new NotImplementedException("Packet type has no suitable handler!");
 
@@ -65,6 +66,7 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.KeepAlive:
                     // Just a keepalive, needs no data
+                    await ServerConnection.SendPacketAsync(new Packet(PacketType.KeepAlive, null));
                     break;
 
                 case PacketType.PlayMusic:
@@ -89,6 +91,10 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.SetUserData:
                     data = packet.Data.ToObject<SetUserData>(); // Just in case the server can for some reason change the user's data
+                    break;
+
+                case PacketType.UserId:
+                    data = packet.Data.ToObject<UserIdData>();
                     break;
             }
         }

@@ -64,6 +64,7 @@ namespace Muziekspeler.Common
         public void StopClientLoop()
         {
             cancellation.Cancel();
+            packetStream.Close();
         }
 
         public async Task SendPacketAsync(Packet packet)
@@ -98,7 +99,8 @@ namespace Muziekspeler.Common
 
         private void handleMedia(byte[] data)
         {
-            _ = Task.Run(async () => await this.MediaReceived(data));
+            if(this.MediaReceived != null)
+                _ = Task.Run(async () => await this.MediaReceived(data));
         }
     }
 }

@@ -13,6 +13,12 @@ namespace Muziekspeler.Common.Packets
 
         [JsonProperty]
         public JObject Data;
+
+        public Packet(PacketType type, object data)
+        {
+            Type = type;
+            Data = JObject.FromObject(data);
+        }
     }
 
     public enum PacketType
@@ -28,6 +34,7 @@ namespace Muziekspeler.Common.Packets
         ClearQueue,
         SkipSong,
         CreateRoom,
-        SetUserData
+        SetUserData,
+        UserId
     }
 }
