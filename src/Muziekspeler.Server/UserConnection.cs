@@ -29,11 +29,18 @@ namespace Muziekspeler.Server
         public async Task SendId(int id)
         {
             await Connection.SendPacketAsync(new Packet(PacketType.UserId, new UserIdData() { Id = id }));
+            this.User.Id = id;
         }
 
         public void Disconnect()
         {
             Connection.StopClientLoop();
+        }
+
+        private void handleUserData(SetUserData data)
+        {
+            this.User.DisplayName = data.DisplayName;
+            this.User.Status = data.Status;
         }
 
         private async Task handlePacketAsync(Packet packet) // TODO add behavior
@@ -92,6 +99,7 @@ namespace Muziekspeler.Server
 
                 case PacketType.SetUserData:
                     data = packet.Data.ToObject<SetUserData>(); // Just in case the server can for some reason change the user's data
+                    handleUserData((SetUserData)data);
                     break;
             }
         }
