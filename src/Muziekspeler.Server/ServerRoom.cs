@@ -54,5 +54,10 @@ namespace Muziekspeler.Server
         {
             throw new NotImplementedException();
         }
+
+        public override async Task HandleChatAsync(ChatMessageData chat)
+        {
+            await BroadcastPacketAsync(new Packet(PacketType.ChatMessage, chat));
+        }
     }
 }

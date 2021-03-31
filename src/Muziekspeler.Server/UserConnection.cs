@@ -59,6 +59,7 @@ namespace Muziekspeler.Server
 
                 case PacketType.ChatMessage:
                     data = packet.Data.ToObject<ChatMessageData>();
+                    await Room.HandleChatAsync((ChatMessageData)data);
                     break;
 
                 case PacketType.RoomList:
