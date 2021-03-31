@@ -55,7 +55,8 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.JoinRoom:
                     data = packet.Data.ToObject<JoinRoomData>();
-                        break;
+                    CurrentRoom.Name = ((JoinRoomData)data).RoomName;
+                    break;
 
                 case PacketType.LeaveRoom:
                     // Has no data
@@ -64,9 +65,9 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.RoomUpdate:
                     data = packet.Data.ToObject<RoomUpdateData>();
-                    // CurrentRoom.Name = ((RoomUpdateData)data).Name;
-                    // CurrentRoom.HostUserId = ((RoomUpdateData)data).Users;
-                    // Song Queue
+                    CurrentRoom.HostUserId = ((RoomUpdateData)data).HostId;
+                    CurrentRoom.Users = ((RoomUpdateData)data).Users;
+                    CurrentRoom.SongQueue = ((RoomUpdateData)data).Queue;
                     break;
 
                 case PacketType.KeepAlive:
