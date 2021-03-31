@@ -18,7 +18,7 @@ namespace Muziekspeler.UWP.Connectivity
 
         public Client()
         {
-
+            
         }
 
         public async Task ConnectAsync()
