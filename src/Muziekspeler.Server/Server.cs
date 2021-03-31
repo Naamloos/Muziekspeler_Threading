@@ -50,6 +50,17 @@ namespace Muziekspeler.Server
             }
         }
 
+        public async Task BroadcastRoomDataAsync(ServerRoom room, byte[] data)
+        {
+            await Task.Yield();
+
+            foreach (var connection in Clients.Where(x => room.Users.Contains(x.User)))
+            {
+                // Could make this into a Parallel.ForEach?
+                _ = Task.Run(async () => await connection.SendDataAsync(data));
+            }
+        }
+
         public async Task TickLoop()
         {
             List<UserConnection> deadclients = new List<UserConnection>();

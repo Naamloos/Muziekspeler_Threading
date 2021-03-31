@@ -13,17 +13,22 @@ namespace Muziekspeler.Server
     {
         public Connection Connection;
         public User User;
-        public Room Room;
+        public ServerRoom Room;
         public int MissedKeepalives = 0;
 
         public UserConnection(TcpClient client)
         {
-            Connection = new Connection(client, handlePacketAsync, null);
+            Connection = new Connection(client, handlePacketAsync, handleMediaAsync);
         }
 
         public async Task SendPacketAsync(Packet packet)
         {
             await this.Connection.SendPacketAsync(packet);
+        }
+
+        public async Task SendDataAsync(byte[] data)
+        {
+            await this.Connection.SendDataAsync(data);
         }
 
         public async Task KeepAliveAsync()
@@ -47,6 +52,14 @@ namespace Muziekspeler.Server
         {
             this.User.DisplayName = data.DisplayName;
             this.User.Status = data.Status;
+        }
+
+        private async Task handleMediaAsync(byte[] data)
+        {
+            if(Room?.HostUserId == this.User.Id)
+            {
+                await Room.BroadcastDataAsync(data);
+            }
         }
 
         private async Task handlePacketAsync(Packet packet) // TODO add behavior

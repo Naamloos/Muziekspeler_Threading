@@ -17,7 +17,9 @@ namespace Muziekspeler.Server
             this.server = server;
         }
 
-        private async Task BroadcastPacketAsync(Packet packet) => await server.BroadcastRoomAsync(this, packet);
+        public async Task BroadcastPacketAsync(Packet packet) => await server.BroadcastRoomAsync(this, packet);
+
+        public async Task BroadcastDataAsync(byte[] data) => await server.BroadcastRoomDataAsync(this, data);
 
         public override async Task ClearQueueAsync()
         {
