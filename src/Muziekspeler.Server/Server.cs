@@ -61,6 +61,16 @@ namespace Muziekspeler.Server
             }
         }
 
+        public async Task SendPacketToUserAsync(int userId, Packet packet)
+        {
+            var client = this.Clients.FirstOrDefault(x => x.User.Id == userId);
+
+            if(client != null)
+            {
+                await client.SendPacketAsync(packet);
+            }
+        }
+
         public async Task TickLoop()
         {
             List<UserConnection> deadclients = new List<UserConnection>();

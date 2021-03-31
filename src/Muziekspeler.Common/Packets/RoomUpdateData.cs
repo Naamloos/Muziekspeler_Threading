@@ -7,7 +7,8 @@ namespace Muziekspeler.Common.Packets
 {
     public struct RoomUpdateData
     {
-        public List<QueueSong> Queue;
+        public int HostId;
+        public Queue<QueueSong> Queue;
         public List<User> Users;
     }
 }

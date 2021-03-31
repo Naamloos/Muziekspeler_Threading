@@ -29,7 +29,22 @@ namespace Muziekspeler.Server
 
         public override async Task NextSongAsync()
         {
-            throw new NotImplementedException();
+            SongQueue.Dequeue();
+            var song = SongQueue.Peek();
+            await BroadcastPacketAsync(new Packet(PacketType.RoomUpdate, new RoomUpdateData()
+            {
+                HostId = this.HostUserId,
+                Queue = this.SongQueue,
+                Users = this.Users
+            }));
+            var user = this.Users.FirstOrDefault(x => x.Id == song.UserId);
+            if(user != null)
+            {
+                await server.SendPacketToUserAsync(user.Id, new Packet(PacketType.StartPlaying, new StartPlayingData()
+                {
+                    SongToPlay = song
+                }));
+            }
         }
 
         public override async Task PauseMusicAsync()

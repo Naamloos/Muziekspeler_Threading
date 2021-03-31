@@ -14,7 +14,7 @@ namespace Muziekspeler.Common.Types
 
         public List<User> Users;
 
-        public List<QueueSong> SongQueue;
+        public Queue<QueueSong> SongQueue;
 
         public abstract Task StartMusicAsync();
 
