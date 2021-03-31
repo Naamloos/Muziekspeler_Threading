@@ -5,12 +5,9 @@ using System.Text;
 
 namespace Muziekspeler.Common.Packets
 {
-    public struct SetUserData
+    public class ReasonData
     {
         [JsonProperty]
-        public string DisplayName;
-
-        [JsonProperty]
-        public string Status;
+        public string Reason;
     }
 }
