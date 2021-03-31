@@ -1,6 +1,8 @@
-﻿using Muziekspeler.Common.Types;
+﻿using Muziekspeler.Common.Packets;
+using Muziekspeler.Common.Types;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -34,6 +36,38 @@ namespace Muziekspeler.Server
                 await connection.SendId(idCounter);
                 idCounter++; // just increase the ID counter by one to ensure unique IDs. No fancy ID reservation system beyond that.
                 Clients.Add(connection);
+            }
+        }
+
+        public async Task BroadcastRoomAsync(ServerRoom room, Packet packet)
+        {
+            await Task.Yield();
+
+            foreach (var connection in Clients.Where(x => room.Users.Contains(x.User)))
+            {
+                // Could make this into a Parallel.ForEach?
+                _ = Task.Run(async () => await connection.SendPacketAsync(packet));
+            }
+        }
+
+        public async Task BroadcastRoomDataAsync(ServerRoom room, byte[] data)
+        {
+            await Task.Yield();
+
+            foreach (var connection in Clients.Where(x => room.Users.Contains(x.User)))
+            {
+                // Could make this into a Parallel.ForEach?
+                _ = Task.Run(async () => await connection.SendDataAsync(data));
+            }
+        }
+
+        public async Task SendPacketToUserAsync(int userId, Packet packet)
+        {
+            var client = this.Clients.FirstOrDefault(x => x.User.Id == userId);
+
+            if(client != null)
+            {
+                await client.SendPacketAsync(packet);
             }
         }
 

@@ -1,14 +1,14 @@
 ﻿using Muziekspeler.Common.Types;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Muziekspeler.Common.Packets
 {
-    public struct RoomUpdateData
+    public class StartPlayingData
     {
-        public int HostId;
-        public Queue<QueueSong> Queue;
-        public List<User> Users;
+        [JsonProperty]
+        public QueueSong SongToPlay;
     }
 }
