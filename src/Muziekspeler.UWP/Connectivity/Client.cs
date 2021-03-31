@@ -18,7 +18,9 @@ namespace Muziekspeler.UWP.Connectivity
 
         public Client()
         {
-            
+            ServerConnection = null;
+            CurrentUser = new User();
+            CurrentRoom = null;
         }
 
         public async Task ConnectAsync()
@@ -53,7 +55,7 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.JoinRoom:
                     data = packet.Data.ToObject<JoinRoomData>();
-                    break;
+                        break;
 
                 case PacketType.LeaveRoom:
                     // Has no data
@@ -62,6 +64,9 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.RoomUpdate:
                     data = packet.Data.ToObject<RoomUpdateData>();
+                    // CurrentRoom.Name = ((RoomUpdateData)data).Name;
+                    // CurrentRoom.HostUserId = ((RoomUpdateData)data).Users;
+                    // Song Queue
                     break;
 
                 case PacketType.KeepAlive:
@@ -95,6 +100,7 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.UserId:
                     data = packet.Data.ToObject<UserIdData>();
+                    CurrentUser.Id = ((UserIdData)data).Id;
                     break;
             }
         }
