@@ -13,11 +13,17 @@ namespace Muziekspeler.Server
     {
         public Connection Connection;
         public User User;
+        public Room Room;
         public int MissedKeepalives = 0;
 
         public UserConnection(TcpClient client)
         {
             Connection = new Connection(client, handlePacketAsync, null);
+        }
+
+        public async Task SendPacketAsync(Packet packet)
+        {
+            await this.Connection.SendPacketAsync(packet);
         }
 
         public async Task KeepAliveAsync()
