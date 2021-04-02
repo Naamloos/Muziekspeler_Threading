@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Xabe.FFmpeg;
 
 namespace Muziekspeler.UWP.Connectivity
 {
@@ -15,10 +16,10 @@ namespace Muziekspeler.UWP.Connectivity
         public Connection ServerConnection;
         public User CurrentUser;
         public Room CurrentRoom;
+        public AudioFilterStream audioStream;
 
         public Client()
         {
-
         }
 
         public async Task ConnectAsync()
@@ -26,7 +27,19 @@ namespace Muziekspeler.UWP.Connectivity
             var tcp = new TcpClient();
             tcp.Connect("127.0.0.1", 5069);
 
-            this.ServerConnection = new Connection(tcp, handlePacketAsync, handleMediaAsync);
+            ServerConnection = new Connection(tcp, handlePacketAsync, handleMediaAsync);
+            audioStream = new AudioFilterStream(ServerConnection);
+        }
+
+        public async Task StartPlayingAsync(string mp3file)
+        {
+            
+
+        }
+
+        private async Task startPlayingAsync()
+        {
+
         }
 
         private async Task handleMediaAsync(byte[] data)
