@@ -8,7 +8,7 @@ namespace Muziekspeler.Common.Types
     {
         public int Id;
 
-        public int DisplayName;
+        public string DisplayName;
 
         public string Status = "Jammin'";
     }
