@@ -1,8 +1,15 @@
-﻿using Muziekspeler.Common;
+﻿using CSCore;
+using CSCore.Codecs.MP3;
+using CSCore.Codecs.WAV;
+using CSCore.MediaFoundation;
+using CSCore.SoundOut;
+using CSCore.Streams;
+using Muziekspeler.Common;
 using Muziekspeler.Common.Packets;
 using Muziekspeler.Common.Types;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -16,7 +23,10 @@ namespace Muziekspeler.UWP.Connectivity
         public Connection ServerConnection;
         public User CurrentUser;
         public Room CurrentRoom;
-        public AudioFilterStream audioStream;
+
+        //cscore APIs
+        private WriteableBufferingSource audioSource;
+        private WasapiOut audioOut;
 
         public Client()
         {
@@ -28,23 +38,39 @@ namespace Muziekspeler.UWP.Connectivity
             tcp.Connect("127.0.0.1", 5069);
 
             ServerConnection = new Connection(tcp, handlePacketAsync, handleMediaAsync);
-            audioStream = new AudioFilterStream(ServerConnection);
+            audioSource = new WriteableBufferingSource(new WaveFormat(4000, 16, 1)) { FillWithZeros = true };
+            audioOut = new WasapiOut();
+            audioOut.Initialize(audioSource);
+            audioOut.Play();
         }
 
         public async Task StartPlayingAsync(string mp3file)
         {
-            
-
+            FileStream fs = File.OpenRead(mp3file);
+            var mp3 = new DmoMp3Decoder(fs);
+            _ = Task.Run(async () => await startPlayingAsync(mp3));
         }
 
-        private async Task startPlayingAsync()
+        private async Task startPlayingAsync(DmoMp3Decoder mp3)
         {
-
+            while(mp3.GetPosition() < mp3.GetLength())
+            {
+                // make one sample buffer
+                var buffer = new byte[mp3.WaveFormat.BytesPerSample];
+                // read one sample
+                mp3.Read(buffer, 0, buffer.Length);
+                // send one sample
+                await ServerConnection.SendDataAsync(buffer);
+                // sleep for sample rate
+                await Task.Delay(mp3.WaveFormat.SampleRate / 1000); // converting hertz (s) to milliseconds
+            }
+            await ServerConnection.SendPacketAsync(new Packet(PacketType.Done, null));
         }
 
         private async Task handleMediaAsync(byte[] data)
         {
-
+            // write received data to writablebufferingsource.
+            this.audioSource.Write(data, 0, data.Length);
         }
 
         private async Task handlePacketAsync(Packet packet) // TODO add behavior
@@ -113,6 +139,17 @@ namespace Muziekspeler.UWP.Connectivity
                 case PacketType.UserId:
                     data = packet.Data.ToObject<UserIdData>();
                     CurrentUser.Id = ((UserIdData)data).Id;
+                    break;
+
+                case PacketType.Done:
+                    break;
+
+                case PacketType.StartPlaying:
+                    data = packet.Data.ToObject<StartPlayingData>();
+                    await this.StartPlayingAsync(((StartPlayingData)data).SongToPlay.Path);
+                    break;
+
+                case PacketType.Fail:
                     break;
             }
         }
