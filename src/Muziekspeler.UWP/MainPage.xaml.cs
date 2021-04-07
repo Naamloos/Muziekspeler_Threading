@@ -27,25 +27,26 @@ namespace Muziekspeler.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public List<Room> rooms;
+        public Dictionary<string, int> Rooms = new Dictionary<string, int>();
         public List<User> users;
         public List<QueueSong> queueSongs;
 
         public MainPage()
         {
             this.InitializeComponent();
+            this.Rooms.Add("kamer", 1);
+            roomList.ItemsSource = Rooms;
         }
 
-        public void listRooms(List<Room> rooms)
+        public void listRooms(Dictionary<string, int> Rooms)
         {
-            ListView roomList = new ListView();
+            //ListView roomList = new ListView();
 
-            
-
-            foreach (Room room in rooms)
+            foreach (KeyValuePair<string, int> entry in Rooms)
             {
-                ListViewItem view = new ListViewItem();
-                Console.Write(room.Name + users.Count);
+                // do something with entry.Value or entry.Key
+                ListViewItem roomList = new ListViewItem();
+                Console.Write(entry.Key + entry.Value);
             }
             return;
         }
