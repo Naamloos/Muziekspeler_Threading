@@ -9,6 +9,32 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="300" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="400" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+
+
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Column="3" Grid.Row="2" FontWeight="SemiBold" Text="Roomlist" FontFamily="Segoe UI" FontSize="30" HorizontalAlignment="Center"/>
+        <ListBox Grid.Column="3" Grid.Row="3">
+            <ListView x:Name="roomList" Margin="10" Height="448" Width="700" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListViewItem>with several</ListViewItem>
+                <ListViewItem >with several</ListViewItem>
+            </ListView>
+        </ListBox>
+
+
 
     </Grid>
 </Page>
