@@ -96,6 +96,11 @@ namespace Muziekspeler.Common.Packets
         /// <summary>
         /// Indicates to a client that something failed. Coupled with <seealso cref="ReasonData"/>
         /// </summary>
-        Fail
+        Fail,
+
+        /// <summary>
+        /// Indicates playback is done.
+        /// </summary>
+        Done
     }
 }

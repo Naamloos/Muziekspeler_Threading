@@ -121,6 +121,9 @@ namespace Muziekspeler.Server
                     data = packet.Data.ToObject<SetUserData>(); // Just in case the server can for some reason change the user's data
                     handleUserData((SetUserData)data);
                     break;
+
+                case PacketType.Done:
+                    break;
             }
         }
     }
