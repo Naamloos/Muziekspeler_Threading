@@ -14,7 +14,6 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using Xabe.FFmpeg;
 
 namespace Muziekspeler.UWP.Connectivity
 {

@@ -177,9 +177,6 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>
     </PackageReference>
-    <PackageReference Include="Xabe.FFmpeg">
-      <Version>4.4.0</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Muziekspeler.Common\Muziekspeler.Common.csproj">
