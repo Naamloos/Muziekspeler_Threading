@@ -6,10 +6,10 @@ namespace Muziekspeler.Common.Types
 {
     public class User
     {
-        public int Id;
+        public int Id { get; set; }
 
-        public int DisplayName;
+        public string DisplayName { get; set; } = "Defaulter";
 
-        public string Status = "Jammin'";
+        public string Status { get; set; } = "Jammin'";
     }
 }
