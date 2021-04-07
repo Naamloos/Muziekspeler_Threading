@@ -44,7 +44,7 @@ namespace Muziekspeler.UWP
 
             foreach (Room room in rooms)
             {
-                ViewLisIte view = new ListViewItem();
+                ListViewItem view = new ListViewItem();
                 Console.Write(room.Name + users.Count);
             }
             return;
