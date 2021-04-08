@@ -19,6 +19,27 @@ namespace Muziekspeler.UWP.Connectivity
 {
     public class Client
     {
+        // events
+        public delegate void OnRoomListUpdate(RoomListData data);
+        public delegate void OnJoinRoom(JoinRoomData data);
+        public delegate void OnLeaveRoom(ReasonData data);
+        public delegate void OnChatMessage(ChatMessageData data);
+        public delegate void OnRoomUpdate(Room data);
+        public delegate void OnPlayMusic();
+        public delegate void OnPauseMusic();
+        public delegate void OnUserUpdate(User currentUser);
+        public delegate void OnServerFail(ReasonData data);
+
+        public event OnRoomListUpdate RoomListUpdate;
+        public event OnJoinRoom JoinRoom;
+        public event OnLeaveRoom LeaveRoom;
+        public event OnChatMessage ChatMessageReceived;
+        public event OnRoomUpdate RoomUpdated;
+        public event OnPlayMusic StartPlaying;
+        public event OnPauseMusic PausePlaying;
+        public event OnUserUpdate UserUpdated;
+        public event OnServerFail ServerError;
+
         public Connection ServerConnection;
         public User CurrentUser;
         public Room CurrentRoom;
@@ -26,6 +47,7 @@ namespace Muziekspeler.UWP.Connectivity
         //cscore APIs
         private WriteableBufferingSource audioSource;
         private WasapiOut audioOut;
+        private bool isPlaying = false;
 
         public Client()
         {
@@ -52,7 +74,8 @@ namespace Muziekspeler.UWP.Connectivity
 
         private async Task startPlayingAsync(DmoMp3Decoder mp3)
         {
-            while(mp3.GetPosition() < mp3.GetLength())
+            this.isPlaying = true;
+            while(mp3.GetPosition() < mp3.GetLength() && this.isPlaying)
             {
                 // make one sample buffer
                 var buffer = new byte[mp3.WaveFormat.BytesPerSample];
@@ -64,6 +87,7 @@ namespace Muziekspeler.UWP.Connectivity
                 await Task.Delay(mp3.WaveFormat.SampleRate / 1000); // converting hertz (s) to milliseconds
             }
             await ServerConnection.SendPacketAsync(new Packet(PacketType.Done, null));
+            this.isPlaying = false;
         }
 
         private async Task handleMediaAsync(byte[] data)
@@ -86,17 +110,17 @@ namespace Muziekspeler.UWP.Connectivity
                     break;
 
                 case PacketType.RoomList:
-                    data = packet.Data.ToObject<RoomListData>();
+                    RoomListUpdate(packet.Data.ToObject<RoomListData>());
                     break;
 
                 case PacketType.JoinRoom:
                     data = packet.Data.ToObject<JoinRoomData>();
                     CurrentRoom.Name = ((JoinRoomData)data).RoomName;
+                    JoinRoom((JoinRoomData)data);
                     break;
 
                 case PacketType.LeaveRoom:
-                    // Has no data
-                    data = packet.Data.ToObject<ReasonData>();
+                    LeaveRoom(packet.Data.ToObject<ReasonData>());
                     break;
 
                 case PacketType.RoomUpdate:
@@ -104,6 +128,8 @@ namespace Muziekspeler.UWP.Connectivity
                     CurrentRoom.HostUserId = ((RoomUpdateData)data).HostId;
                     CurrentRoom.Users = ((RoomUpdateData)data).Users;
                     CurrentRoom.SongQueue = ((RoomUpdateData)data).Queue;
+
+                    RoomUpdated(CurrentRoom);
                     break;
 
                 case PacketType.KeepAlive:
@@ -113,18 +139,25 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.PlayMusic:
                     // Just indicates a play command
+                    StartPlaying();
                     break;
 
                 case PacketType.PauseMusic:
                     // Just indicates pause command
+                    PausePlaying();
                     break;
 
                 case PacketType.ClearQueue:
                     // Just indicates clear queue command
+                    await this.CurrentRoom.ClearQueueAsync();
+                    RoomUpdated(CurrentRoom);
                     break;
 
                 case PacketType.SkipSong:
                     // Just indicates skip song command
+                    if (isPlaying)
+                        isPlaying = false;
+                    await this.CurrentRoom.NextSongAsync();
                     break;
 
                 case PacketType.CreateRoom:
@@ -133,11 +166,15 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.SetUserData:
                     data = packet.Data.ToObject<SetUserData>(); // Just in case the server can for some reason change the user's data
+                    this.CurrentUser.DisplayName = ((SetUserData)data).DisplayName;
+                    this.CurrentUser.Status = ((SetUserData)data).Status;
+                    UserUpdated(CurrentUser);
                     break;
 
                 case PacketType.UserId:
                     data = packet.Data.ToObject<UserIdData>();
                     CurrentUser.Id = ((UserIdData)data).Id;
+                    UserUpdated(CurrentUser);
                     break;
 
                 case PacketType.Done:
@@ -149,6 +186,7 @@ namespace Muziekspeler.UWP.Connectivity
                     break;
 
                 case PacketType.Fail:
+                    ServerError(packet.Data.ToObject<ReasonData>());
                     break;
             }
         }
