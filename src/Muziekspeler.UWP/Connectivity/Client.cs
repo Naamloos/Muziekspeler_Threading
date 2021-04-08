@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace Muziekspeler.UWP.Connectivity
 {
@@ -46,7 +47,7 @@ namespace Muziekspeler.UWP.Connectivity
 
         //cscore APIs
         private WriteableBufferingSource audioSource;
-        private WasapiOut audioOut;
+        private ISoundOut audioOut;
         private bool isPlaying = false;
 
         public Client()
@@ -61,22 +62,22 @@ namespace Muziekspeler.UWP.Connectivity
             ServerConnection.StartClientLoop();
 
             await Task.Delay(1000);
-            await StartPlayingAsync("E:/test.mp3");
         }
 
         private async Task StartMusicPlayer(EncodingData data)
         {
-            audioSource = new WriteableBufferingSource(new WaveFormat(data.SampleRate, data.Bits, data.Channels, (AudioEncoding)data.Encoding)) { FillWithZeros = false };
-            audioOut = new WasapiOut();
+            audioSource = new WriteableBufferingSource(new WaveFormat(data.SampleRate, data.Bits, data.Channels, (AudioEncoding)data.Encoding)) { FillWithZeros = true };
+            audioOut = new WaveOut();
             audioOut.Initialize(audioSource);
             audioOut.Play();
         }
 
-        public async Task StartPlayingAsync(string mp3file)
+        public async Task StartPlayingAsync(Stream mp3file)
         {
-            var file = await Windows.Storage.StorageFile.GetFileFromPathAsync(mp3file);
-            Stream fs = await file.OpenStreamForReadAsync();
-            var mp3 = new DmoMp3Decoder(fs);
+            var mp3 = new DmoMp3Decoder(mp3file);
+            audioOut = new DirectSoundOut();
+            audioOut.Initialize(mp3);
+            audioOut.Play();
             _ = Task.Run(async () => await startPlayingAsync(mp3));
         }
 
@@ -93,11 +94,13 @@ namespace Muziekspeler.UWP.Connectivity
                 });
 
             await ServerConnection.SendPacketAsync(encodingdata);
+            await Task.Delay(2500);
             while(mp3.GetPosition() < mp3.GetLength() && this.isPlaying)
             {
                 // make one sample buffer
                 var buffer = new byte[mp3.WaveFormat.BytesPerSample];
                 // read one sample
+                var pos = mp3.Position;
                 mp3.Read(buffer, 0, buffer.Length);
                 // send one sample
                 await ServerConnection.SendDataAsync(buffer);
@@ -208,7 +211,7 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.StartPlaying:
                     data = packet.Data.ToObject<StartPlayingData>();
-                    await this.StartPlayingAsync(((StartPlayingData)data).SongToPlay.Path);
+                    //await this.StartPlayingAsync(((StartPlayingData)data).SongToPlay.Path);
                     break;
 
                 case PacketType.Fail:

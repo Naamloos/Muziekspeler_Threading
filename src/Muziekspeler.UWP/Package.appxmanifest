@@ -40,6 +40,13 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.mediaPlayback">
+          <uap:MediaPlayback>
+            <uap:Codec Name="mpeg3"/>
+          </uap:MediaPlayback>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
 

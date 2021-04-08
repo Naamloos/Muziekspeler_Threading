@@ -21,6 +21,7 @@ using Muziekspeler.UWP.Connectivity;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.ApplicationModel;
+using Windows.Storage;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -51,6 +52,16 @@ namespace Muziekspeler.UWP
             Client.RoomListUpdate += Client_RoomListUpdate;
         }
 
+        private async void startTestMp3()
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.List;
+            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
+            picker.FileTypeFilter.Add(".mp3");
+            var filestream = await (await picker.PickSingleFileAsync()).OpenStreamForReadAsync();
+            await Client.StartPlayingAsync(filestream);
+        }
+
         private void UnhookClientEvents()
         {
             Client.RoomListUpdate -= Client_RoomListUpdate;
@@ -62,6 +73,7 @@ namespace Muziekspeler.UWP
             () =>
             {
                 listRooms(data.RoomNames);
+                startTestMp3();
             });
         }
 

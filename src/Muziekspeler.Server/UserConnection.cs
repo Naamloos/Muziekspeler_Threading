@@ -14,6 +14,7 @@ namespace Muziekspeler.Server
         public Connection Connection;
         public User User = new User();
         public ServerRoom Room;
+        public Server server;
         public int MissedKeepalives = 0;
 
         public UserConnection(TcpClient client)
@@ -63,6 +64,7 @@ namespace Muziekspeler.Server
 
         private async Task handleMediaAsync(byte[] data)
         {
+            await this.SendDataAsync(data);
             if(Room?.HostUserId == this.User.Id)
             {
                 await Room.BroadcastDataAsync(data);
@@ -131,6 +133,11 @@ namespace Muziekspeler.Server
 
                 case PacketType.Done:
                     // TODO Make next user play song
+                    break;
+
+                case PacketType.EncodingData:
+                    await this.SendPacketAsync(packet);
+                    //await this.Room.BroadcastPacketAsync(packet);
                     break;
             }
         }
