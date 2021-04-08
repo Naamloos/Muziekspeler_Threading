@@ -14,7 +14,7 @@
   <mp:PhoneIdentity PhoneProductId="a92985f3-ca9e-482e-b364-113c1720a907" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Muziekspeler.UWP</DisplayName>
+    <DisplayName>LimePlayer</DisplayName>
     <PublisherDisplayName>Ryand</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -45,5 +45,6 @@
 
   <Capabilities>
     <Capability Name="internetClient" />
+    <uap:Capability Name="musicLibrary"/>
   </Capabilities>
 </Package>

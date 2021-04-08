@@ -101,6 +101,8 @@ namespace Muziekspeler.Common.Packets
         /// <summary>
         /// Indicates playback is done.
         /// </summary>
-        Done
+        Done,
+
+        EncodingData
     }
 }

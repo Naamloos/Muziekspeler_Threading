@@ -31,6 +31,7 @@ namespace Muziekspeler.Server
         {
             listener.Start();
             Console.WriteLine("Server up n running!");
+            _ = Task.Run(async () => await TickLoop());
             while (!cancellation.IsCancellationRequested)
             {
                 var client = await listener.AcceptTcpClientAsync();

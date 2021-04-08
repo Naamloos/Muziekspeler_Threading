@@ -57,14 +57,16 @@ namespace Muziekspeler.UWP.Connectivity
         {
             var tcp = new TcpClient();
             tcp.Connect("127.0.0.1", 5069);
-            _ = Task.Run(async () => await StartMusicPlayer());
             ServerConnection = new Connection(tcp, handlePacketAsync, handleMediaAsync);
             ServerConnection.StartClientLoop();
+
+            await Task.Delay(1000);
+            await StartPlayingAsync("E:/test.mp3");
         }
 
-        private async Task StartMusicPlayer()
+        private async Task StartMusicPlayer(EncodingData data)
         {
-            audioSource = new WriteableBufferingSource(new WaveFormat(4000, 16, 1)) { FillWithZeros = true };
+            audioSource = new WriteableBufferingSource(new WaveFormat(data.SampleRate, data.Bits, data.Channels, (AudioEncoding)data.Encoding)) { FillWithZeros = false };
             audioOut = new WasapiOut();
             audioOut.Initialize(audioSource);
             audioOut.Play();
@@ -72,7 +74,8 @@ namespace Muziekspeler.UWP.Connectivity
 
         public async Task StartPlayingAsync(string mp3file)
         {
-            FileStream fs = File.OpenRead(mp3file);
+            var file = await Windows.Storage.StorageFile.GetFileFromPathAsync(mp3file);
+            Stream fs = await file.OpenStreamForReadAsync();
             var mp3 = new DmoMp3Decoder(fs);
             _ = Task.Run(async () => await startPlayingAsync(mp3));
         }
@@ -80,6 +83,16 @@ namespace Muziekspeler.UWP.Connectivity
         private async Task startPlayingAsync(DmoMp3Decoder mp3)
         {
             this.isPlaying = true;
+            var encodingdata = new Packet(PacketType.EncodingData,
+                new EncodingData()
+                {
+                    SampleRate = mp3.WaveFormat.SampleRate,
+                    Bits = mp3.WaveFormat.BitsPerSample,
+                    Channels = mp3.WaveFormat.Channels,
+                    Encoding = (int)mp3.WaveFormat.WaveFormatTag
+                });
+
+            await ServerConnection.SendPacketAsync(encodingdata);
             while(mp3.GetPosition() < mp3.GetLength() && this.isPlaying)
             {
                 // make one sample buffer
@@ -201,6 +214,15 @@ namespace Muziekspeler.UWP.Connectivity
                 case PacketType.Fail:
                     if (ServerError != null)
                         ServerError(packet.Data.ToObject<ReasonData>());
+                    break;
+
+                case PacketType.EncodingData:
+                    if (audioOut != null)
+                    {
+                        audioOut.Stop();
+                        audioOut.Dispose();
+                    }
+                    _ = Task.Run(async () => await StartMusicPlayer(packet.Data.ToObject<EncodingData>()));
                     break;
             }
         }
