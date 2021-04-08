@@ -77,6 +77,11 @@ namespace Muziekspeler.UWP
             }
             return;
         }
+
+        private void quit_btn_Click(object sender, RoutedEventArgs e)
+        {
+            Environment.Exit(1);
+        }
     }
 }
 
