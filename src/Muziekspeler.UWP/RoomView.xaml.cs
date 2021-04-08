@@ -20,9 +20,9 @@ namespace Muziekspeler.UWP
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class RoomList : Page
+    public sealed partial class RoomView : Page
     {
-        public RoomList()
+        public RoomView()
         {
             this.InitializeComponent();
         }
