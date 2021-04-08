@@ -71,6 +71,11 @@ namespace Muziekspeler.UWP
             roomList.ItemsSource = Rooms;
             return;
         }
+
+        private void quit_btn_Click(object sender, RoutedEventArgs e)
+        {
+            Environment.Exit(1);
+        }
     }
 }
 
