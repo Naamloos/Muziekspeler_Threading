@@ -56,25 +56,19 @@ namespace Muziekspeler.UWP
             Client.RoomListUpdate -= Client_RoomListUpdate;
         }
 
-        private void Client_RoomListUpdate(RoomListData data)
+        private async void Client_RoomListUpdate(RoomListData data)
         {
-            _ = Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.High,
-           () =>
-           {
-               listRooms(data.RoomNames);
-           });
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            () =>
+            {
+                listRooms(data.RoomNames);
+            });
         }
 
         public void listRooms(List<string> Rooms)
         {
             //ListView roomList = new ListView();
-
-            foreach (string entry in Rooms)
-            {
-                // do something with entry.Value or entry.Key
-                ListViewItem roomList = new ListViewItem();
-                Console.Write(entry);
-            }
+            roomList.ItemsSource = Rooms;
             return;
         }
     }

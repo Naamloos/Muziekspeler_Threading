@@ -34,6 +34,7 @@ namespace Muziekspeler.Server
             while (!cancellation.IsCancellationRequested)
             {
                 var client = await listener.AcceptTcpClientAsync();
+                Console.WriteLine("Accepted a client!");
                 var connection = new UserConnection(client);
                 connection.StartClientLoop();
                 await connection.SendId(idCounter);

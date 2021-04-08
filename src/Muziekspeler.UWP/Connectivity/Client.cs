@@ -41,7 +41,7 @@ namespace Muziekspeler.UWP.Connectivity
         public event OnServerFail ServerError;
 
         public Connection ServerConnection;
-        public User CurrentUser;
+        public User CurrentUser = new User();
         public Room CurrentRoom;
 
         //cscore APIs
@@ -57,14 +57,17 @@ namespace Muziekspeler.UWP.Connectivity
         {
             var tcp = new TcpClient();
             tcp.Connect("127.0.0.1", 5069);
-
+            _ = Task.Run(async () => await StartMusicPlayer());
             ServerConnection = new Connection(tcp, handlePacketAsync, handleMediaAsync);
+            ServerConnection.StartClientLoop();
+        }
+
+        private async Task StartMusicPlayer()
+        {
             audioSource = new WriteableBufferingSource(new WaveFormat(4000, 16, 1)) { FillWithZeros = true };
             audioOut = new WasapiOut();
             audioOut.Initialize(audioSource);
             audioOut.Play();
-
-            ServerConnection.StartClientLoop();
         }
 
         public async Task StartPlayingAsync(string mp3file)
@@ -112,17 +115,20 @@ namespace Muziekspeler.UWP.Connectivity
                     break;
 
                 case PacketType.RoomList:
-                    RoomListUpdate(packet.Data.ToObject<RoomListData>());
+                    if (RoomListUpdate != null)
+                        RoomListUpdate(packet.Data.ToObject<RoomListData>());
                     break;
 
                 case PacketType.JoinRoom:
                     data = packet.Data.ToObject<JoinRoomData>();
                     CurrentRoom.Name = ((JoinRoomData)data).RoomName;
-                    JoinRoom((JoinRoomData)data);
+                    if (JoinRoom != null)
+                        JoinRoom((JoinRoomData)data);
                     break;
 
                 case PacketType.LeaveRoom:
-                    LeaveRoom(packet.Data.ToObject<ReasonData>());
+                    if (LeaveRoom != null)
+                        LeaveRoom(packet.Data.ToObject<ReasonData>());
                     break;
 
                 case PacketType.RoomUpdate:
@@ -130,8 +136,8 @@ namespace Muziekspeler.UWP.Connectivity
                     CurrentRoom.HostUserId = ((RoomUpdateData)data).HostId;
                     CurrentRoom.Users = ((RoomUpdateData)data).Users;
                     CurrentRoom.SongQueue = ((RoomUpdateData)data).Queue;
-
-                    RoomUpdated(CurrentRoom);
+                    if (RoomUpdated != null)
+                        RoomUpdated(CurrentRoom);
                     break;
 
                 case PacketType.KeepAlive:
@@ -141,18 +147,21 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.PlayMusic:
                     // Just indicates a play command
-                    StartPlaying();
+                    if (StartPlaying != null)
+                        StartPlaying();
                     break;
 
                 case PacketType.PauseMusic:
                     // Just indicates pause command
-                    PausePlaying();
+                    if (PausePlaying != null)
+                        PausePlaying();
                     break;
 
                 case PacketType.ClearQueue:
                     // Just indicates clear queue command
                     await this.CurrentRoom.ClearQueueAsync();
-                    RoomUpdated(CurrentRoom);
+                    if (RoomUpdated != null)
+                        RoomUpdated(CurrentRoom);
                     break;
 
                 case PacketType.SkipSong:
@@ -170,13 +179,15 @@ namespace Muziekspeler.UWP.Connectivity
                     data = packet.Data.ToObject<SetUserData>(); // Just in case the server can for some reason change the user's data
                     this.CurrentUser.DisplayName = ((SetUserData)data).DisplayName;
                     this.CurrentUser.Status = ((SetUserData)data).Status;
-                    UserUpdated(CurrentUser);
+                    if (UserUpdated != null)
+                        UserUpdated(CurrentUser);
                     break;
 
                 case PacketType.UserId:
                     data = packet.Data.ToObject<UserIdData>();
                     CurrentUser.Id = ((UserIdData)data).Id;
-                    UserUpdated(CurrentUser);
+                    if(UserUpdated != null)
+                        UserUpdated(CurrentUser);
                     break;
 
                 case PacketType.Done:
@@ -188,7 +199,8 @@ namespace Muziekspeler.UWP.Connectivity
                     break;
 
                 case PacketType.Fail:
-                    ServerError(packet.Data.ToObject<ReasonData>());
+                    if (ServerError != null)
+                        ServerError(packet.Data.ToObject<ReasonData>());
                     break;
             }
         }
