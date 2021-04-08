@@ -17,6 +17,10 @@ using Muziekspeler.Common;
 using Muziekspeler.Common.Types;
 using Muziekspeler.Common.Packets;
 using System.Collections.ObjectModel;
+using Muziekspeler.UWP.Connectivity;
+using System.Threading.Tasks;
+using Windows.UI.Core;
+using Windows.ApplicationModel;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -30,23 +34,46 @@ namespace Muziekspeler.UWP
         public Dictionary<string, int> Rooms = new Dictionary<string, int>();
         public List<User> users;
         public List<QueueSong> queueSongs;
+        public Client Client;
 
         public MainPage()
         {
             this.InitializeComponent();
-            this.Rooms.Add("kamer", 1);
+
+            Client = new Client();
+            HookClientEvents();
+            _ = Task.Run(async () => await Client.ConnectAsync());
             roomList.ItemsSource = Rooms;
         }
 
-        public void listRooms(Dictionary<string, int> Rooms)
+        private void HookClientEvents()
+        {
+            Client.RoomListUpdate += Client_RoomListUpdate;
+        }
+
+        private void UnhookClientEvents()
+        {
+            Client.RoomListUpdate -= Client_RoomListUpdate;
+        }
+
+        private void Client_RoomListUpdate(RoomListData data)
+        {
+            _ = Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.High,
+           () =>
+           {
+               listRooms(data.RoomNames);
+           });
+        }
+
+        public void listRooms(List<string> Rooms)
         {
             //ListView roomList = new ListView();
 
-            foreach (KeyValuePair<string, int> entry in Rooms)
+            foreach (string entry in Rooms)
             {
                 // do something with entry.Value or entry.Key
                 ListViewItem roomList = new ListViewItem();
-                Console.Write(entry.Key + entry.Value);
+                Console.Write(entry);
             }
             return;
         }

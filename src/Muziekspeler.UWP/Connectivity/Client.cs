@@ -63,6 +63,8 @@ namespace Muziekspeler.UWP.Connectivity
             audioOut = new WasapiOut();
             audioOut.Initialize(audioSource);
             audioOut.Play();
+
+            ServerConnection.StartClientLoop();
         }
 
         public async Task StartPlayingAsync(string mp3file)

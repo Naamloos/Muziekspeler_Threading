@@ -14,13 +14,15 @@ namespace Muziekspeler.Server
     public class Server
     {
         public List<UserConnection> Clients;
-        public Dictionary<string, Room> Rooms;
+        public Dictionary<string, ServerRoom> Rooms;
         private CancellationTokenSource cancellation;
         private TcpListener listener;
         private int idCounter = 1;
 
         public Server(CancellationTokenSource cts)
         {
+            Clients = new List<UserConnection>();
+            Rooms = new Dictionary<string, ServerRoom>();
             cancellation = cts;
             listener = new TcpListener(IPAddress.Parse("0.0.0.0"),5069);
         }
@@ -33,7 +35,9 @@ namespace Muziekspeler.Server
             {
                 var client = await listener.AcceptTcpClientAsync();
                 var connection = new UserConnection(client);
+                connection.StartClientLoop();
                 await connection.SendId(idCounter);
+                await connection.SendRoomList(new List<string>() { "test a", "test b moi" });
                 idCounter++; // just increase the ID counter by one to ensure unique IDs. No fancy ID reservation system beyond that.
                 Clients.Add(connection);
             }

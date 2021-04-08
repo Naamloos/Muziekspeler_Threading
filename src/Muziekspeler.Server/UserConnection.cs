@@ -12,7 +12,7 @@ namespace Muziekspeler.Server
     public class UserConnection
     {
         public Connection Connection;
-        public User User;
+        public User User = new User();
         public ServerRoom Room;
         public int MissedKeepalives = 0;
 
@@ -21,9 +21,16 @@ namespace Muziekspeler.Server
             Connection = new Connection(client, handlePacketAsync, handleMediaAsync);
         }
 
+        public void StartClientLoop() => Connection.StartClientLoop();
+
         public async Task SendPacketAsync(Packet packet)
         {
             await this.Connection.SendPacketAsync(packet);
+        }
+
+        public async Task SendRoomList(List<string> rooms)
+        {
+            await this.SendPacketAsync(new Packet(PacketType.RoomList, new RoomListData() { RoomNames = rooms }));
         }
 
         public async Task SendDataAsync(byte[] data)
@@ -123,6 +130,7 @@ namespace Muziekspeler.Server
                     break;
 
                 case PacketType.Done:
+                    // TODO Make next user play song
                     break;
             }
         }
