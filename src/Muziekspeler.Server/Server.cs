@@ -75,6 +75,7 @@ namespace Muziekspeler.Server
             room.HostUserId = connection.GetUser().Id;
             room.Users.Add(connection.GetUser());
             connection.SetRoom(room);
+            this.Rooms.Add(room);
 
             await connection.SendPacketAsync(new Packet(PacketType.JoinRoom, null));
             await Task.Delay(1500);
