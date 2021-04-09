@@ -19,7 +19,7 @@ namespace Muziekspeler.Server
 
         public async Task BroadcastPacketAsync(Packet packet) => await server.BroadcastRoomAsync(this, packet);
 
-        public async Task BroadcastDataAsync(byte[] data) => await server.BroadcastRoomDataAsync(this, data);
+        //public async Task BroadcastDataAsync(byte[] data) => await server.BroadcastRoomDataAsync(this, data);
 
         public override async Task ClearQueueAsync()
         {
@@ -29,6 +29,9 @@ namespace Muziekspeler.Server
 
         public override async Task NextSongAsync()
         {
+            if (SongQueue.Count() <= 0)
+                return;
+
             SongQueue.Dequeue();
             var song = SongQueue.Peek();
             await BroadcastPacketAsync(new Packet(PacketType.RoomUpdate, new RoomUpdateData()
@@ -47,32 +50,15 @@ namespace Muziekspeler.Server
             }
         }
 
-        public override async Task PauseMusicAsync()
+        public async Task QueueSongAsync(QueueSong song)
         {
-            throw new NotImplementedException();
+            this.SongQueue.Enqueue(song);
+
+            if (SongQueue.Count() == 1)
+                await NextSongAsync();
         }
 
-        public override async Task PreviousSongAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override async Task QueueSongAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override async Task StartMusicAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override async Task StopMusicAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override async Task HandleChatAsync(ChatMessageData chat)
+        public async Task HandleChatAsync(ChatMessageData chat)
         {
             await BroadcastPacketAsync(new Packet(PacketType.ChatMessage, chat));
         }

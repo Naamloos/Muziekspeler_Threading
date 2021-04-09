@@ -12,20 +12,28 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.Media.Audio;
+using Windows.Media.Core;
+using Windows.Media.MediaProperties;
+using Windows.Storage;
 
 namespace Muziekspeler.UWP.Connectivity
 {
     public class Client
     {
+        const string SERVER_HOST = "127.0.0.1"; // TODO host a small server instance instead?
         // events
         public delegate void OnRoomListUpdate(RoomListData data);
         public delegate void OnJoinRoom(JoinRoomData data);
         public delegate void OnLeaveRoom(ReasonData data);
         public delegate void OnChatMessage(ChatMessageData data);
         public delegate void OnRoomUpdate(Room data);
-        public delegate void OnPlayMusic();
+        public delegate void OnPlayMusic(StartPlayingData data);
         public delegate void OnPauseMusic();
         public delegate void OnUserUpdate(User currentUser);
         public delegate void OnServerFail(ReasonData data);
@@ -41,59 +49,23 @@ namespace Muziekspeler.UWP.Connectivity
         public event OnServerFail ServerError;
 
         public Connection ServerConnection;
-        public User CurrentUser;
+        public User CurrentUser = new User();
         public Room CurrentRoom;
 
-        //cscore APIs
-        private WriteableBufferingSource audioSource;
-        private WasapiOut audioOut;
         private bool isPlaying = false;
 
-        public Client()
+        private Client()
         {
         }
 
         public async Task ConnectAsync()
         {
             var tcp = new TcpClient();
-            tcp.Connect("127.0.0.1", 5069);
+            tcp.Connect(SERVER_HOST, 5069);
+            ServerConnection = new Connection(tcp, handlePacketAsync);
+            ServerConnection.StartClientLoop();
 
-            ServerConnection = new Connection(tcp, handlePacketAsync, handleMediaAsync);
-            audioSource = new WriteableBufferingSource(new WaveFormat(4000, 16, 1)) { FillWithZeros = true };
-            audioOut = new WasapiOut();
-            audioOut.Initialize(audioSource);
-            audioOut.Play();
-        }
-
-        public async Task StartPlayingAsync(string mp3file)
-        {
-            FileStream fs = File.OpenRead(mp3file);
-            var mp3 = new DmoMp3Decoder(fs);
-            _ = Task.Run(async () => await startPlayingAsync(mp3));
-        }
-
-        private async Task startPlayingAsync(DmoMp3Decoder mp3)
-        {
-            this.isPlaying = true;
-            while(mp3.GetPosition() < mp3.GetLength() && this.isPlaying)
-            {
-                // make one sample buffer
-                var buffer = new byte[mp3.WaveFormat.BytesPerSample];
-                // read one sample
-                mp3.Read(buffer, 0, buffer.Length);
-                // send one sample
-                await ServerConnection.SendDataAsync(buffer);
-                // sleep for sample rate
-                await Task.Delay(mp3.WaveFormat.SampleRate / 1000); // converting hertz (s) to milliseconds
-            }
-            await ServerConnection.SendPacketAsync(new Packet(PacketType.Done, null));
-            this.isPlaying = false;
-        }
-
-        private async Task handleMediaAsync(byte[] data)
-        {
-            // write received data to writablebufferingsource.
-            this.audioSource.Write(data, 0, data.Length);
+            await Task.Delay(1000);
         }
 
         private async Task handlePacketAsync(Packet packet) // TODO add behavior
@@ -106,21 +78,24 @@ namespace Muziekspeler.UWP.Connectivity
                     throw new NotImplementedException("Packet type has no suitable handler!");
 
                 case PacketType.ChatMessage:
-                    data = packet.Data.ToObject<ChatMessageData>();
+                    ChatMessageReceived(packet.Data.ToObject<ChatMessageData>());
                     break;
 
                 case PacketType.RoomList:
-                    RoomListUpdate(packet.Data.ToObject<RoomListData>());
+                    if (RoomListUpdate != null)
+                        RoomListUpdate(packet.Data.ToObject<RoomListData>());
                     break;
 
                 case PacketType.JoinRoom:
                     data = packet.Data.ToObject<JoinRoomData>();
                     CurrentRoom.Name = ((JoinRoomData)data).RoomName;
-                    JoinRoom((JoinRoomData)data);
+                    if (JoinRoom != null)
+                        JoinRoom((JoinRoomData)data);
                     break;
 
                 case PacketType.LeaveRoom:
-                    LeaveRoom(packet.Data.ToObject<ReasonData>());
+                    if (LeaveRoom != null)
+                        LeaveRoom(packet.Data.ToObject<ReasonData>());
                     break;
 
                 case PacketType.RoomUpdate:
@@ -128,8 +103,8 @@ namespace Muziekspeler.UWP.Connectivity
                     CurrentRoom.HostUserId = ((RoomUpdateData)data).HostId;
                     CurrentRoom.Users = ((RoomUpdateData)data).Users;
                     CurrentRoom.SongQueue = ((RoomUpdateData)data).Queue;
-
-                    RoomUpdated(CurrentRoom);
+                    if (RoomUpdated != null)
+                        RoomUpdated(CurrentRoom);
                     break;
 
                 case PacketType.KeepAlive:
@@ -137,20 +112,17 @@ namespace Muziekspeler.UWP.Connectivity
                     await ServerConnection.SendPacketAsync(new Packet(PacketType.KeepAlive, null));
                     break;
 
-                case PacketType.PlayMusic:
-                    // Just indicates a play command
-                    StartPlaying();
-                    break;
-
                 case PacketType.PauseMusic:
                     // Just indicates pause command
-                    PausePlaying();
+                    if (PausePlaying != null)
+                        PausePlaying();
                     break;
 
                 case PacketType.ClearQueue:
                     // Just indicates clear queue command
                     await this.CurrentRoom.ClearQueueAsync();
-                    RoomUpdated(CurrentRoom);
+                    if (RoomUpdated != null)
+                        RoomUpdated(CurrentRoom);
                     break;
 
                 case PacketType.SkipSong:
@@ -168,27 +140,41 @@ namespace Muziekspeler.UWP.Connectivity
                     data = packet.Data.ToObject<SetUserData>(); // Just in case the server can for some reason change the user's data
                     this.CurrentUser.DisplayName = ((SetUserData)data).DisplayName;
                     this.CurrentUser.Status = ((SetUserData)data).Status;
-                    UserUpdated(CurrentUser);
+                    if (UserUpdated != null)
+                        UserUpdated(CurrentUser);
                     break;
 
                 case PacketType.UserId:
                     data = packet.Data.ToObject<UserIdData>();
                     CurrentUser.Id = ((UserIdData)data).Id;
-                    UserUpdated(CurrentUser);
+                    if(UserUpdated != null)
+                        UserUpdated(CurrentUser);
                     break;
 
                 case PacketType.Done:
                     break;
 
                 case PacketType.StartPlaying:
-                    data = packet.Data.ToObject<StartPlayingData>();
-                    await this.StartPlayingAsync(((StartPlayingData)data).SongToPlay.Path);
+                    StartPlaying(packet.Data.ToObject<StartPlayingData>());
                     break;
 
                 case PacketType.Fail:
-                    ServerError(packet.Data.ToObject<ReasonData>());
+                    if (ServerError != null)
+                        ServerError(packet.Data.ToObject<ReasonData>());
                     break;
             }
+        }
+
+        private static Client _instance;
+        public static Client Get()
+        {
+            if(_instance == null)
+            {
+                _instance = new Client();
+                _ = Task.Run(async () => await _instance.ConnectAsync());
+            }
+
+            return _instance;
         }
     }
 }

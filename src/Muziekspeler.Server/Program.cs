@@ -15,7 +15,7 @@ namespace Muziekspeler.Server
             Console.WriteLine("Starting server..");
             _ = Task.Run(async() => await server.StartServerLoopAsync());
 
-            while (cancellation.IsCancellationRequested) { }
+            while (!cancellation.IsCancellationRequested) { }
 
             Console.WriteLine("Server killed.");
         }

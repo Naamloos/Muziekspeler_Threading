@@ -11,55 +11,61 @@ namespace Muziekspeler.Server
 {
     public class UserConnection
     {
-        public Connection Connection;
-        public User User;
-        public ServerRoom Room;
+        private Connection connection;
+        private User user = new User();
+        private ServerRoom room;
+        private Server server;
         public int MissedKeepalives = 0;
 
-        public UserConnection(TcpClient client)
+        public UserConnection(TcpClient client, Server server)
         {
-            Connection = new Connection(client, handlePacketAsync, handleMediaAsync);
+            connection = new Connection(client, handlePacketAsync);
+            this.server = server;
+        }
+
+        public void StartClientLoop() => connection.StartClientLoop();
+
+        public User GetUser()
+        {
+            return this.user;
         }
 
         public async Task SendPacketAsync(Packet packet)
         {
-            await this.Connection.SendPacketAsync(packet);
+            await this.connection.SendPacketAsync(packet);
+        }
+
+        public async Task SendRoomList(List<string> rooms)
+        {
+            await this.SendPacketAsync(new Packet(PacketType.RoomList, new RoomListData() { RoomNames = rooms }));
         }
 
         public async Task SendDataAsync(byte[] data)
         {
-            await this.Connection.SendDataAsync(data);
+            await this.connection.SendDataAsync(data);
         }
 
         public async Task KeepAliveAsync()
         {
             this.MissedKeepalives++;
-            await Connection.SendPacketAsync(new Packet(PacketType.KeepAlive, null));
+            await connection.SendPacketAsync(new Packet(PacketType.KeepAlive, null));
         }
 
         public async Task SendId(int id)
         {
-            await Connection.SendPacketAsync(new Packet(PacketType.UserId, new UserIdData() { Id = id }));
-            this.User.Id = id;
+            await connection.SendPacketAsync(new Packet(PacketType.UserId, new UserIdData() { Id = id }));
+            this.user.Id = id;
         }
 
         public void Disconnect()
         {
-            Connection.StopClientLoop();
+            connection.StopClientLoop();
         }
 
         private void handleUserData(SetUserData data)
         {
-            this.User.DisplayName = data.DisplayName;
-            this.User.Status = data.Status;
-        }
-
-        private async Task handleMediaAsync(byte[] data)
-        {
-            if(Room?.HostUserId == this.User.Id)
-            {
-                await Room.BroadcastDataAsync(data);
-            }
+            this.user.DisplayName = data.DisplayName;
+            this.user.Status = data.Status;
         }
 
         private async Task handlePacketAsync(Packet packet) // TODO add behavior
@@ -72,11 +78,12 @@ namespace Muziekspeler.Server
 
                 case PacketType.ChatMessage:
                     data = packet.Data.ToObject<ChatMessageData>();
-                    await Room.HandleChatAsync((ChatMessageData)data);
+                    await room.HandleChatAsync((ChatMessageData)data);
                     break;
 
                 case PacketType.RoomList:
                     data = packet.Data.ToObject<RoomListData>();
+                    await SendRoomList(new List<string>() { "refresh test" });
                     break;
 
                 case PacketType.JoinRoom:
@@ -95,6 +102,7 @@ namespace Muziekspeler.Server
                 case PacketType.KeepAlive:
                     // Just a keepalive, needs no data
                     this.MissedKeepalives = 0;
+                    Console.WriteLine($"Kept alive user {user.Id}");
                     break;
 
                 case PacketType.PlayMusic:
@@ -123,6 +131,12 @@ namespace Muziekspeler.Server
                     break;
 
                 case PacketType.Done:
+                    // TODO Make next user play song
+                    break;
+
+                case PacketType.EncodingData:
+                    await this.SendPacketAsync(packet);
+                    //await this.Room.BroadcastPacketAsync(packet);
                     break;
             }
         }

@@ -17,6 +17,14 @@ using Muziekspeler.Common;
 using Muziekspeler.Common.Types;
 using Muziekspeler.Common.Packets;
 using System.Collections.ObjectModel;
+using Muziekspeler.UWP.Connectivity;
+using System.Threading.Tasks;
+using Windows.UI.Core;
+using Windows.ApplicationModel;
+using Windows.Storage;
+using Windows.Media.Core;
+using Windows.Media.Audio;
+using Windows.Media.MediaProperties;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -27,28 +35,77 @@ namespace Muziekspeler.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public Dictionary<string, int> Rooms = new Dictionary<string, int>();
+        public ObservableCollection<string> Rooms = new ObservableCollection<string>();
         public List<User> users;
         public List<QueueSong> queueSongs;
+        public Client Client;
 
         public MainPage()
         {
             this.InitializeComponent();
-            this.Rooms.Add("kamer", 1);
+
+            Client = Client.Get();
+
+            HookClientEvents();
             roomList.ItemsSource = Rooms;
         }
 
-        public void listRooms(Dictionary<string, int> Rooms)
+        private void HookClientEvents()
+        {
+            Client.RoomListUpdate += Client_RoomListUpdate;
+        }
+
+        private void UnhookClientEvents()
+        {
+            Client.RoomListUpdate -= Client_RoomListUpdate;
+        }
+
+        private async void Client_RoomListUpdate(RoomListData data)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            () =>
+            {
+                listRooms(data.RoomNames);
+            });
+        }
+
+        public void listRooms(List<string> rooms)
         {
             //ListView roomList = new ListView();
-
-            foreach (KeyValuePair<string, int> entry in Rooms)
-            {
-                // do something with entry.Value or entry.Key
-                ListViewItem roomList = new ListViewItem();
-                Console.Write(entry.Key + entry.Value);
-            }
+            //Rooms.Clear();
+            foreach(string room in rooms)
+                this.Rooms.Add(room);
             return;
+        }
+
+        private async void goToRoomView()
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            () =>
+            {
+                UnhookClientEvents();
+                this.Frame.Navigate(typeof(RoomView));
+            });
+        }
+
+        private void hostRoom(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void joinRoom(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void refreshRoomList(object sender, RoutedEventArgs e)
+        {
+            await Client.ServerConnection.SendPacketAsync(new Packet(PacketType.RoomList, null));
+        }
+
+        private void quit_btn_Click(object sender, RoutedEventArgs e)
+        {
+            Environment.Exit(1);
         }
     }
 }

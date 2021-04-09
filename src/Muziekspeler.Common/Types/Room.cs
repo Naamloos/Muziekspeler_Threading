@@ -16,20 +16,10 @@ namespace Muziekspeler.Common.Types
 
         public Queue<QueueSong> SongQueue;
 
-        public abstract Task StartMusicAsync();
-
-        public abstract Task StopMusicAsync();
+        public QueueSong CurrentSong;
 
         public abstract Task NextSongAsync();
 
-        public abstract Task PreviousSongAsync();
-
-        public abstract Task PauseMusicAsync();
-
-        public abstract Task QueueSongAsync();
-
         public abstract Task ClearQueueAsync();
-
-        public abstract Task HandleChatAsync(ChatMessageData chat);
     }
 }

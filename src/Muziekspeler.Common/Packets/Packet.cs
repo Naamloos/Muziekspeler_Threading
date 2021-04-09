@@ -17,7 +17,10 @@ namespace Muziekspeler.Common.Packets
         public Packet(PacketType type, object data)
         {
             Type = type;
-            Data = JObject.FromObject(data);
+            if (data != null)
+                Data = JObject.FromObject(data);
+            else
+                Data = new JObject();
         }
     }
 
@@ -101,6 +104,10 @@ namespace Muziekspeler.Common.Packets
         /// <summary>
         /// Indicates playback is done.
         /// </summary>
-        Done
+        Done,
+
+        EncodingData,
+
+        QueueSong
     }
 }
