@@ -54,9 +54,9 @@ namespace Muziekspeler.Server
             await server.sendRoomUpdate(this);
         }
 
-        public async Task HandleChatAsync(ChatMessageData chat)
+        public async Task HandleChatAsync(string chat)
         {
-            await BroadcastPacketAsync(new Packet(PacketType.ChatMessage, chat));
+            await BroadcastPacketAsync(new Packet(PacketType.ChatMessage, new ChatMessageData() { Message = chat }));
         }
     }
 }

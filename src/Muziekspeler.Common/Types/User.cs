@@ -8,8 +8,13 @@ namespace Muziekspeler.Common.Types
     {
         public int Id { get; set; }
 
-        public string DisplayName { get; set; } = "Defaulter";
+        public string DisplayName { get; set; } = "User" + new Random().Next();
 
         public string Status { get; set; } = "Jammin'";
+
+        public override string ToString()
+        {
+            return DisplayName;
+        }
     }
 }

@@ -85,7 +85,7 @@ namespace Muziekspeler.Server
 
                 case PacketType.ChatMessage:
                     data = packet.Data.ToObject<ChatMessageData>();
-                    await room.HandleChatAsync((ChatMessageData)data);
+                    await room.HandleChatAsync($"{user.DisplayName}: {((ChatMessageData)data).Message}");
                     break;
 
                 case PacketType.RoomList:
@@ -99,7 +99,7 @@ namespace Muziekspeler.Server
 
                 case PacketType.LeaveRoom:
                     // Has no data
-                    data = packet.Data.ToObject<ReasonData>();
+                    room.Users.Remove(this.user);
                     break;
 
                 case PacketType.RoomUpdate:

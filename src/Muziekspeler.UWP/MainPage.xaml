@@ -139,7 +139,7 @@
         <Button Background="#234F1E" x:Name="join_btn" Content="JOIN" Height="100" Width="250" Grid.Row="1" Grid.Column="1" FontFamily="Arial" FontSize="40" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Click="joinRoom"/>
         <Button Background="#234F1E" x:Name="quit_btn" Content="QUIT" VerticalAlignment="Center" Height="100" Width="250" Grid.Row="1" Grid.Column="2"  FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="quit_btn_Click"/>
 
-        <SearchBox x:Name="search" FocusOnKeyboardInput="True" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Width="400" SearchHistoryEnabled="False" PlaceholderText="..." Margin="100,68,100,67" />
+        <SearchBox x:Name="search" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Width="400" SearchHistoryEnabled="False" PlaceholderText="..." Margin="100,68,100,67" />
 
         <Rectangle Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="4" Fill="LightGray" Margin="0,10,0,156"/>
         <ListBox ItemContainerStyle="{StaticResource limeStyle}" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3" Margin="10,20,10,0" Background="#FF9A9A9A" x:Name="roomList" RequestedTheme="Light">

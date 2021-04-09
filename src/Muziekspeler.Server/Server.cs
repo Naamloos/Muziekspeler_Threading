@@ -95,9 +95,8 @@ namespace Muziekspeler.Server
         {
             await Task.Yield();
 
-            foreach (var connection in Clients.Where(x => room.Users.Select(x => x.Id).Contains(x.GetUser().Id)))
+            foreach (var connection in Clients.Where(x => room.Users.Select(y => y.Id).Contains(x.GetUser().Id)))
             {
-                // Could make this into a Parallel.ForEach?
                 _ = Task.Run(async () => await connection.SendPacketAsync(packet));
             }
         }
@@ -129,6 +128,18 @@ namespace Muziekspeler.Server
             while (!cancellation.IsCancellationRequested)
             {
                 Console.WriteLine("Broadcasting KeepAlives.");
+                // quick linq query to remove empty rooms
+                Rooms.RemoveAll(x => x.Users.Count <= 0);
+
+                foreach(var r in Rooms)
+                {
+                    if(!r.Users.Any(x => x.Id == r.HostUserId))
+                    {
+                        r.HostUserId = r.Users.First().Id;
+                        await sendRoomUpdate(r);
+                    }
+                }
+
                 foreach(var u in Clients)
                 {
                     await u.KeepAliveAsync();

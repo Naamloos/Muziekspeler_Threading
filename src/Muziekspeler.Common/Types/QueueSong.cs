@@ -8,5 +8,10 @@ namespace Muziekspeler.Common.Types
     {
         public string Path;
         public int UserId;
+
+        public override string ToString()
+        {
+            return Path;
+        }
     }
 }

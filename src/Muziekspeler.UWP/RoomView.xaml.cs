@@ -28,7 +28,7 @@ namespace Muziekspeler.UWP
     public sealed partial class RoomView : Page
     {
         private Client client;
-        private ObservableCollection<string> chat = new ObservableCollection<string>();
+        private ObservableCollection<ChatMessageData> chat = new ObservableCollection<ChatMessageData>();
         private ObservableCollection<QueueSong> songqueue = new ObservableCollection<QueueSong>();
         private ObservableCollection<User> userlist = new ObservableCollection<User>();
 
@@ -108,13 +108,25 @@ namespace Muziekspeler.UWP
 
         private void Client_RoomUpdated(Common.Types.Room data)
         {
-            this.songqueue.Clear();
-            foreach(var song in data.SongQueue)
+            RunOnUi(() =>
             {
-                this.songqueue.Add(song);
-            }
+                if (data.SongQueue.Count() > 0)
+                    songname.Text = data.SongQueue.Peek().ToString();
+                else
+                    songname.Text = "No songs in queue..";
 
-            this.userlist.Clear();
+                this.songqueue.Clear();
+                foreach (var song in data.SongQueue)
+                {
+                    this.songqueue.Add(song);
+                }
+
+                this.userlist.Clear();
+                foreach (var user in data.Users)
+                {
+                    this.userlist.Add(user);
+                }
+            });
         }
 
         private void Client_PausePlaying()
@@ -124,7 +136,11 @@ namespace Muziekspeler.UWP
 
         private void Client_ChatMessageReceived(Common.Packets.ChatMessageData data)
         {
-            this.chat.Add($"{data.Message}");
+            RunOnUi(() =>
+            {
+                this.chat.Add(data);
+                listViewChat.ScrollIntoView(data);
+            });
         }
 
         private void unhookEvents()
@@ -144,6 +160,12 @@ namespace Muziekspeler.UWP
                 unhookEvents();
                 this.Frame.Navigate(typeof(MainPage));
             });
+        }
+
+        private async void sendButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(!string.IsNullOrEmpty(chatBox.Text))
+                await client.ServerConnection.SendPacketAsync(new Packet(PacketType.ChatMessage, new ChatMessageData() { Message = chatBox.Text }));
         }
     }
 }

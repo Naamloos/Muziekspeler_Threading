@@ -25,6 +25,7 @@ using Windows.Storage;
 using Windows.Media.Core;
 using Windows.Media.Audio;
 using Windows.Media.MediaProperties;
+using Windows.UI.Popups;
 
 namespace Muziekspeler.UWP
 {
@@ -53,6 +54,24 @@ namespace Muziekspeler.UWP
         {
             Client.RoomListUpdate += Client_RoomListUpdate;
             Client.JoinRoom += Client_JoinRoom;
+            Client.ServerError += Client_ServerError;
+        }
+
+        private void Client_ServerError(ReasonData data)
+        {
+            RunOnUi(async () =>
+            {
+                _ = new MessageDialog($"Server did an oopsie! {data.Reason}").ShowAsync();
+            });
+        }
+
+        private async void RunOnUi(Action action)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            () =>
+            {
+                action();
+            });
         }
 
         private void Client_JoinRoom(JoinRoomData data)
@@ -112,6 +131,14 @@ namespace Muziekspeler.UWP
             string selected = (string)roomList.SelectedItem;
             if (!string.IsNullOrEmpty(selected))
                 await Client.ServerConnection.SendPacketAsync(new Packet(PacketType.JoinRoom, new JoinRoomData() { RoomName = selected }));
+            else
+            {
+                RunOnUi(async () =>
+                {
+                    _ = new MessageDialog($"uh..").ShowAsync();
+                });
+            }
+
             // Server should tell the client to join if all is OK
         }
 

@@ -9,5 +9,10 @@ namespace Muziekspeler.Common.Packets
     {
         [JsonProperty]
         public string Message;
+
+        public override string ToString()
+        {
+            return Message;
+        }
     }
 }
