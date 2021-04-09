@@ -20,11 +20,10 @@ namespace Muziekspeler.Common
         public PacketHandlerAsync PacketReceived;
         public MediaHandlerAsync MediaReceived;
 
-        public Connection(TcpClient packetStream, PacketHandlerAsync PacketReceived, MediaHandlerAsync MediaReceived)
+        public Connection(TcpClient packetStream, PacketHandlerAsync PacketReceived)
         {
             this.packetStream = packetStream;
             this.PacketReceived = PacketReceived;
-            this.MediaReceived = MediaReceived;
             this.cancellation = new CancellationTokenSource();
             this.semaphore = new Semaphore(1, 1);
         }
@@ -86,7 +85,7 @@ namespace Muziekspeler.Common
             // Send packet
             var stream = packetStream.GetStream();
             var writer = new BinaryWriter(stream);
-            writer.Write(false); // tell other end that this is a packet and not media.
+            writer.Write(false); // tell other end that this is a media and not packet.
             writer.Write(data.Length);
             writer.Write(data);
             semaphore.Release();
@@ -97,6 +96,7 @@ namespace Muziekspeler.Common
             _ = Task.Run(async () => await this.PacketReceived(packet));
         }
 
+        //Leftover methods. Keeping this just in case we decide to use this in any other way.
         private void handleMedia(byte[] data)
         {
             if(this.MediaReceived != null)

@@ -24,7 +24,7 @@ namespace Muziekspeler.Server
             Clients = new List<UserConnection>();
             Rooms = new Dictionary<string, ServerRoom>();
             cancellation = cts;
-            listener = new TcpListener(IPAddress.Parse("0.0.0.0"),5069);
+            listener = new TcpListener(IPAddress.Parse("0.0.0.0"), 5069);
         }
 
         public async Task StartServerLoopAsync()
@@ -36,7 +36,7 @@ namespace Muziekspeler.Server
             {
                 var client = await listener.AcceptTcpClientAsync();
                 Console.WriteLine("Accepted a client!");
-                var connection = new UserConnection(client);
+                var connection = new UserConnection(client, this);
                 connection.StartClientLoop();
                 await connection.SendId(idCounter);
                 await connection.SendRoomList(new List<string>() { "test a", "test b moi" });
@@ -49,27 +49,27 @@ namespace Muziekspeler.Server
         {
             await Task.Yield();
 
-            foreach (var connection in Clients.Where(x => room.Users.Contains(x.User)))
+            foreach (var connection in Clients.Where(x => room.Users.Select(x => x.Id).Contains(x.GetUser().Id)))
             {
                 // Could make this into a Parallel.ForEach?
                 _ = Task.Run(async () => await connection.SendPacketAsync(packet));
             }
         }
 
-        public async Task BroadcastRoomDataAsync(ServerRoom room, byte[] data)
-        {
-            await Task.Yield();
+        //public async Task BroadcastRoomDataAsync(ServerRoom room, byte[] data)
+        //{
+        //    await Task.Yield();
 
-            foreach (var connection in Clients.Where(x => room.Users.Contains(x.User)))
-            {
-                // Could make this into a Parallel.ForEach?
-                _ = Task.Run(async () => await connection.SendDataAsync(data));
-            }
-        }
+        //    foreach (var connection in Clients.Where(x => room.Users.Contains(x.GetUser())))
+        //    {
+        //        // Could make this into a Parallel.ForEach?
+        //        _ = Task.Run(async () => await connection.SendDataAsync(data));
+        //    }
+        //}
 
         public async Task SendPacketToUserAsync(int userId, Packet packet)
         {
-            var client = this.Clients.FirstOrDefault(x => x.User.Id == userId);
+            var client = this.Clients.FirstOrDefault(x => x.GetUser().Id == userId);
 
             if(client != null)
             {
@@ -82,11 +82,13 @@ namespace Muziekspeler.Server
             List<UserConnection> deadclients = new List<UserConnection>();
             while (!cancellation.IsCancellationRequested)
             {
+                Console.WriteLine("Broadcasting KeepAlives.");
                 foreach(var u in Clients)
                 {
                     await u.KeepAliveAsync();
                     if (u.MissedKeepalives >= 5)
                     {
+                        Console.WriteLine($"client with uid {u.GetUser().Id} died.");
                         deadclients.Add(u);
                         u.Disconnect();
                     }
@@ -94,7 +96,7 @@ namespace Muziekspeler.Server
                 Clients.RemoveAll(x => deadclients.Contains(x));
                 deadclients.Clear();
 
-                await Task.Delay(2500);
+                await Task.Delay(1000);
             }
         }
     }

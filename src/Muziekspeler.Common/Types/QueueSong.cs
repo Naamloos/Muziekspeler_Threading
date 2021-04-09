@@ -7,7 +7,6 @@ namespace Muziekspeler.Common.Types
     public class QueueSong
     {
         public string Path;
-        public int Length;
         public int UserId;
     }
 }

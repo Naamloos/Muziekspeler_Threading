@@ -11,22 +11,28 @@ namespace Muziekspeler.Server
 {
     public class UserConnection
     {
-        public Connection Connection;
-        public User User = new User();
-        public ServerRoom Room;
-        public Server server;
+        private Connection connection;
+        private User user = new User();
+        private ServerRoom room;
+        private Server server;
         public int MissedKeepalives = 0;
 
-        public UserConnection(TcpClient client)
+        public UserConnection(TcpClient client, Server server)
         {
-            Connection = new Connection(client, handlePacketAsync, handleMediaAsync);
+            connection = new Connection(client, handlePacketAsync);
+            this.server = server;
         }
 
-        public void StartClientLoop() => Connection.StartClientLoop();
+        public void StartClientLoop() => connection.StartClientLoop();
+
+        public User GetUser()
+        {
+            return this.user;
+        }
 
         public async Task SendPacketAsync(Packet packet)
         {
-            await this.Connection.SendPacketAsync(packet);
+            await this.connection.SendPacketAsync(packet);
         }
 
         public async Task SendRoomList(List<string> rooms)
@@ -36,39 +42,30 @@ namespace Muziekspeler.Server
 
         public async Task SendDataAsync(byte[] data)
         {
-            await this.Connection.SendDataAsync(data);
+            await this.connection.SendDataAsync(data);
         }
 
         public async Task KeepAliveAsync()
         {
             this.MissedKeepalives++;
-            await Connection.SendPacketAsync(new Packet(PacketType.KeepAlive, null));
+            await connection.SendPacketAsync(new Packet(PacketType.KeepAlive, null));
         }
 
         public async Task SendId(int id)
         {
-            await Connection.SendPacketAsync(new Packet(PacketType.UserId, new UserIdData() { Id = id }));
-            this.User.Id = id;
+            await connection.SendPacketAsync(new Packet(PacketType.UserId, new UserIdData() { Id = id }));
+            this.user.Id = id;
         }
 
         public void Disconnect()
         {
-            Connection.StopClientLoop();
+            connection.StopClientLoop();
         }
 
         private void handleUserData(SetUserData data)
         {
-            this.User.DisplayName = data.DisplayName;
-            this.User.Status = data.Status;
-        }
-
-        private async Task handleMediaAsync(byte[] data)
-        {
-            await this.SendDataAsync(data);
-            if(Room?.HostUserId == this.User.Id)
-            {
-                await Room.BroadcastDataAsync(data);
-            }
+            this.user.DisplayName = data.DisplayName;
+            this.user.Status = data.Status;
         }
 
         private async Task handlePacketAsync(Packet packet) // TODO add behavior
@@ -81,7 +78,7 @@ namespace Muziekspeler.Server
 
                 case PacketType.ChatMessage:
                     data = packet.Data.ToObject<ChatMessageData>();
-                    await Room.HandleChatAsync((ChatMessageData)data);
+                    await room.HandleChatAsync((ChatMessageData)data);
                     break;
 
                 case PacketType.RoomList:
@@ -104,6 +101,7 @@ namespace Muziekspeler.Server
                 case PacketType.KeepAlive:
                     // Just a keepalive, needs no data
                     this.MissedKeepalives = 0;
+                    Console.WriteLine($"Kept alive user {user.Id}");
                     break;
 
                 case PacketType.PlayMusic:

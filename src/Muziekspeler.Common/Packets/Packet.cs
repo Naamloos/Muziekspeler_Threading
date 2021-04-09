@@ -103,6 +103,8 @@ namespace Muziekspeler.Common.Packets
         /// </summary>
         Done,
 
-        EncodingData
+        EncodingData,
+
+        QueueSong
     }
 }

@@ -22,6 +22,9 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.ApplicationModel;
 using Windows.Storage;
+using Windows.Media.Core;
+using Windows.Media.Audio;
+using Windows.Media.MediaProperties;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -32,7 +35,7 @@ namespace Muziekspeler.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public Dictionary<string, int> Rooms = new Dictionary<string, int>();
+        public List<string> Rooms = new List<string>();
         public List<User> users;
         public List<QueueSong> queueSongs;
         public Client Client;
@@ -41,25 +44,15 @@ namespace Muziekspeler.UWP
         {
             this.InitializeComponent();
 
-            Client = new Client();
+            Client = Client.Get();
+
             HookClientEvents();
-            _ = Task.Run(async () => await Client.ConnectAsync());
             roomList.ItemsSource = Rooms;
         }
 
         private void HookClientEvents()
         {
             Client.RoomListUpdate += Client_RoomListUpdate;
-        }
-
-        private async void startTestMp3()
-        {
-            var picker = new Windows.Storage.Pickers.FileOpenPicker();
-            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.List;
-            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.MusicLibrary;
-            picker.FileTypeFilter.Add(".mp3");
-            var filestream = await (await picker.PickSingleFileAsync()).OpenStreamForReadAsync();
-            await Client.StartPlayingAsync(filestream);
         }
 
         private void UnhookClientEvents()
@@ -73,7 +66,6 @@ namespace Muziekspeler.UWP
             () =>
             {
                 listRooms(data.RoomNames);
-                startTestMp3();
             });
         }
 

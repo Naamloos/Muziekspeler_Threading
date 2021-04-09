@@ -12,21 +12,28 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.Media.Audio;
+using Windows.Media.Core;
+using Windows.Media.MediaProperties;
 using Windows.Storage;
 
 namespace Muziekspeler.UWP.Connectivity
 {
     public class Client
     {
+        const string SERVER_HOST = "127.0.0.1"; // TODO host a small server instance instead?
         // events
         public delegate void OnRoomListUpdate(RoomListData data);
         public delegate void OnJoinRoom(JoinRoomData data);
         public delegate void OnLeaveRoom(ReasonData data);
         public delegate void OnChatMessage(ChatMessageData data);
         public delegate void OnRoomUpdate(Room data);
-        public delegate void OnPlayMusic();
+        public delegate void OnPlayMusic(StartPlayingData data);
         public delegate void OnPauseMusic();
         public delegate void OnUserUpdate(User currentUser);
         public delegate void OnServerFail(ReasonData data);
@@ -45,76 +52,20 @@ namespace Muziekspeler.UWP.Connectivity
         public User CurrentUser = new User();
         public Room CurrentRoom;
 
-        //cscore APIs
-        private WriteableBufferingSource audioSource;
-        private ISoundOut audioOut;
         private bool isPlaying = false;
 
-        public Client()
+        private Client()
         {
         }
 
         public async Task ConnectAsync()
         {
             var tcp = new TcpClient();
-            tcp.Connect("127.0.0.1", 5069);
-            ServerConnection = new Connection(tcp, handlePacketAsync, handleMediaAsync);
+            tcp.Connect(SERVER_HOST, 5069);
+            ServerConnection = new Connection(tcp, handlePacketAsync);
             ServerConnection.StartClientLoop();
 
             await Task.Delay(1000);
-        }
-
-        private async Task StartMusicPlayer(EncodingData data)
-        {
-            audioSource = new WriteableBufferingSource(new WaveFormat(data.SampleRate, data.Bits, data.Channels, (AudioEncoding)data.Encoding)) { FillWithZeros = true };
-            audioOut = new WaveOut();
-            audioOut.Initialize(audioSource);
-            audioOut.Play();
-        }
-
-        public async Task StartPlayingAsync(Stream mp3file)
-        {
-            var mp3 = new DmoMp3Decoder(mp3file);
-            audioOut = new DirectSoundOut();
-            audioOut.Initialize(mp3);
-            audioOut.Play();
-            _ = Task.Run(async () => await startPlayingAsync(mp3));
-        }
-
-        private async Task startPlayingAsync(DmoMp3Decoder mp3)
-        {
-            this.isPlaying = true;
-            var encodingdata = new Packet(PacketType.EncodingData,
-                new EncodingData()
-                {
-                    SampleRate = mp3.WaveFormat.SampleRate,
-                    Bits = mp3.WaveFormat.BitsPerSample,
-                    Channels = mp3.WaveFormat.Channels,
-                    Encoding = (int)mp3.WaveFormat.WaveFormatTag
-                });
-
-            await ServerConnection.SendPacketAsync(encodingdata);
-            await Task.Delay(2500);
-            while(mp3.GetPosition() < mp3.GetLength() && this.isPlaying)
-            {
-                // make one sample buffer
-                var buffer = new byte[mp3.WaveFormat.BytesPerSample];
-                // read one sample
-                var pos = mp3.Position;
-                mp3.Read(buffer, 0, buffer.Length);
-                // send one sample
-                await ServerConnection.SendDataAsync(buffer);
-                // sleep for sample rate
-                await Task.Delay(mp3.WaveFormat.SampleRate / 1000); // converting hertz (s) to milliseconds
-            }
-            await ServerConnection.SendPacketAsync(new Packet(PacketType.Done, null));
-            this.isPlaying = false;
-        }
-
-        private async Task handleMediaAsync(byte[] data)
-        {
-            // write received data to writablebufferingsource.
-            this.audioSource.Write(data, 0, data.Length);
         }
 
         private async Task handlePacketAsync(Packet packet) // TODO add behavior
@@ -127,7 +78,7 @@ namespace Muziekspeler.UWP.Connectivity
                     throw new NotImplementedException("Packet type has no suitable handler!");
 
                 case PacketType.ChatMessage:
-                    data = packet.Data.ToObject<ChatMessageData>();
+                    ChatMessageReceived(packet.Data.ToObject<ChatMessageData>());
                     break;
 
                 case PacketType.RoomList:
@@ -159,12 +110,6 @@ namespace Muziekspeler.UWP.Connectivity
                 case PacketType.KeepAlive:
                     // Just a keepalive, needs no data
                     await ServerConnection.SendPacketAsync(new Packet(PacketType.KeepAlive, null));
-                    break;
-
-                case PacketType.PlayMusic:
-                    // Just indicates a play command
-                    if (StartPlaying != null)
-                        StartPlaying();
                     break;
 
                 case PacketType.PauseMusic:
@@ -210,24 +155,26 @@ namespace Muziekspeler.UWP.Connectivity
                     break;
 
                 case PacketType.StartPlaying:
-                    data = packet.Data.ToObject<StartPlayingData>();
-                    //await this.StartPlayingAsync(((StartPlayingData)data).SongToPlay.Path);
+                    StartPlaying(packet.Data.ToObject<StartPlayingData>());
                     break;
 
                 case PacketType.Fail:
                     if (ServerError != null)
                         ServerError(packet.Data.ToObject<ReasonData>());
                     break;
-
-                case PacketType.EncodingData:
-                    if (audioOut != null)
-                    {
-                        audioOut.Stop();
-                        audioOut.Dispose();
-                    }
-                    _ = Task.Run(async () => await StartMusicPlayer(packet.Data.ToObject<EncodingData>()));
-                    break;
             }
+        }
+
+        private static Client _instance;
+        public static Client Get()
+        {
+            if(_instance == null)
+            {
+                _instance = new Client();
+                _ = Task.Run(async () => await _instance.ConnectAsync());
+            }
+
+            return _instance;
         }
     }
 }
