@@ -167,5 +167,10 @@ namespace Muziekspeler.UWP
             if(!string.IsNullOrEmpty(chatBox.Text))
                 await client.ServerConnection.SendPacketAsync(new Packet(PacketType.ChatMessage, new ChatMessageData() { Message = chatBox.Text }));
         }
+
+        private async void ButtonForward_Click(object sender, RoutedEventArgs e)
+        {
+            await client.ServerConnection.SendPacketAsync(new Packet(PacketType.SkipSong, null));
+        }
     }
 }

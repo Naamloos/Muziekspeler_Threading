@@ -40,7 +40,7 @@
         <Button x:Name="ButtonPlay" Height="125" Width="125" Margin="327,157,0,0" VerticalAlignment="Top" Grid.Row="1" Background="{x:Null}">
             <Image x:Name="image1" HorizontalAlignment="Center" Height="100" Grid.Row="1" VerticalAlignment="Center" Width="100" Source="/Img/right-arrow.png"/>
         </Button>
-        <Button x:Name="ButtonForward" Height="125" Width="125" Margin="558,157,0,0" VerticalAlignment="Top" Grid.Row="1" Background="{x:Null}">
+        <Button x:Name="ButtonForward" Height="125" Width="125" Margin="558,157,0,0" VerticalAlignment="Top" Grid.Row="1" Background="{x:Null}" Click="ButtonForward_Click">
             <Image x:Name="image2" HorizontalAlignment="Center" Height="100" Margin="0,12,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows.png"/>
         </Button>
 
