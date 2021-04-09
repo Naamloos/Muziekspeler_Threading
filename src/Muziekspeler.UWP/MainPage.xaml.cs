@@ -78,14 +78,24 @@ namespace Muziekspeler.UWP
             return;
         }
 
+        private async void goToRoomView()
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            () =>
+            {
+                UnhookClientEvents();
+                this.Frame.Navigate(typeof(RoomView));
+            });
+        }
+
         private void hostRoom(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void joinRoom(object sender, RoutedEventArgs e)
         {
-            string selected = (string)roomList.SelectedItem;
+
         }
 
         private async void refreshRoomList(object sender, RoutedEventArgs e)
