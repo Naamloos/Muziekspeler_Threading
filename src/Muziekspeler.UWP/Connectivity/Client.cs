@@ -50,7 +50,7 @@ namespace Muziekspeler.UWP.Connectivity
 
         public Connection ServerConnection;
         public User CurrentUser = new User();
-        public Room CurrentRoom;
+        public ClientRoom CurrentRoom;
 
         private bool isPlaying = false;
 

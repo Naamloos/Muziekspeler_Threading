@@ -26,8 +26,8 @@
         </Canvas>
 
 
-        <Button Background="#234F1E" x:Name="button" Content="LEAVE" Margin="10,223,0,0" VerticalAlignment="Top" Height="100" Width="250" Grid.Column="1"  FontFamily="Arial" FontSize="40" FontWeight="Normal" Foreground="White"/>
-        <Button Background="#234F1E" x:Name="button_Copy" Content="UPLOAD" Margin="490,223,0,0" VerticalAlignment="Top" Height="100" Width="250" FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White"/>
+        <Button Background="#234F1E" x:Name="button" Content="LEAVE" Margin="10,223,0,0" VerticalAlignment="Top" Height="100" Width="250" Grid.Column="1"  FontFamily="Arial" FontSize="40" FontWeight="Normal" Foreground="White" Click="leaveButton"/>
+        <Button Background="#234F1E" x:Name="button_Copy" Content="ENQUEUE" Margin="490,223,0,0" VerticalAlignment="Top" Height="100" Width="250" FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="enqueueButton"/>
 
         <Rectangle Grid.Row="1" Fill="LightGray" Margin="40,10,10,25"/>
         <Rectangle Grid.Row="1" Fill="#234F1E" Margin="55,20,20,35"/>
@@ -64,6 +64,7 @@
         <Image x:Name="image" HorizontalAlignment="Left" Height="100" Margin="100,182,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows-reverse.png" Stretch="Fill"/>
         <Image x:Name="image1" HorizontalAlignment="Center" Height="100" Margin="0,182,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/right-arrow.png"/>
         <Image x:Name="image2" HorizontalAlignment="Left" Height="100" Margin="555,182,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows.png"/>
+        <MediaElement Grid.Column="1" HorizontalAlignment="Left" Height="100" Margin="875,40,0,0" VerticalAlignment="Top" Width="100"/>
 
 
 

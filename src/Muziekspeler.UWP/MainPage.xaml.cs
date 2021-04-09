@@ -90,12 +90,14 @@ namespace Muziekspeler.UWP
 
         private void hostRoom(object sender, RoutedEventArgs e)
         {
-            
+            // do stuff to host a new room
+            goToRoomView();
         }
 
         private void joinRoom(object sender, RoutedEventArgs e)
         {
-
+            // do stuff to join existing room
+            goToRoomView();
         }
 
         private async void refreshRoomList(object sender, RoutedEventArgs e)

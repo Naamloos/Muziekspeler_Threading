@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Muziekspeler.UWP.Connectivity;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +23,42 @@ namespace Muziekspeler.UWP
     /// </summary>
     public sealed partial class RoomView : Page
     {
+        private Client client;
+
         public RoomView()
         {
             this.InitializeComponent();
+            client = Client.Get();
+            hookEvents();
+        }
+
+        private void leaveButton(object sender, RoutedEventArgs e)
+        {
+            leaveRoom();
+        }
+
+        private void enqueueButton(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void hookEvents()
+        {
+
+        }
+
+        private void unhookEvents()
+        {
+
+        }
+
+        private async void leaveRoom()
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            () =>
+            {
+                unhookEvents();
+                this.Frame.Navigate(typeof(MainPage));
+            });
         }
     }
 }
