@@ -8,6 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <!--Grid Definitions-->
     <Grid Background="#98BF64" Height="1000" Width="1500">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -22,18 +23,29 @@
         <Image Source="/Img/music-row.png" Grid.ColumnSpan="2" Margin="375,-73,375,73" />
         <Canvas Grid.ColumnSpan="2" Margin="10,10,10,125">
             <Ellipse Width="225" Height="115" Stroke="White" StrokeThickness="2" Fill="#234F1E" Canvas.Left="627" Canvas.Top="42"/>
-            <TextBox Background="{x:Null}" BorderThickness="0" x:Name="textBox" Canvas.Left="670" Canvas.Top="78" Text="Limeplayer" TextWrapping="Wrap" FontFamily="Arial" FontSize="30" Width="140" Foreground="White" RenderTransformOrigin="0.707,0.563"/>
+            <TextBlock x:Name="TitleText" Canvas.Left="645" Canvas.Top="71" Text="limeplayer" TextWrapping="Wrap" FontFamily="Comic Sans MS" FontSize="40" Foreground="White"/>
         </Canvas>
 
+        <!--Buttons for the upload and leave function-->
+        <Button Background="#234F1E" x:Name="button" Content="LEAVE" Margin="10,223,0,0" VerticalAlignment="Top" Height="100" Width="250" Grid.Column="1"  FontFamily="Arial" FontSize="40" FontWeight="Normal" Foreground="White" Click="button_Click_Leave"/>
+        <Button Background="#234F1E" x:Name="button_Copy" Content="UPLOAD" Margin="490,223,0,0" VerticalAlignment="Top" Height="100" Width="250" FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="button_Click_Upload"/>
 
-        <Button Background="#234F1E" x:Name="button" Content="LEAVE" Margin="10,223,0,0" VerticalAlignment="Top" Height="100" Width="250" Grid.Column="1"  FontFamily="Arial" FontSize="40" FontWeight="Normal" Foreground="White"/>
-        <Button Background="#234F1E" x:Name="button_Copy" Content="UPLOAD" Margin="490,223,0,0" VerticalAlignment="Top" Height="100" Width="250" FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White"/>
-
+        <!--Area for the current playing song and 3 buttons to navigate the song list-->
         <Rectangle Grid.Row="1" Fill="LightGray" Margin="40,10,10,25"/>
         <Rectangle Grid.Row="1" Fill="#234F1E" Margin="55,20,20,35"/>
         <Rectangle Grid.Row="1" Fill="Black" Margin="55,49,20,202"/>
-        <TextBox  Background="{x:Null}" Margin="25,49,25,202" Grid.Row="1" FontFamily="Arial" Text="Get Lucky - Daftpunk" FontSize="50" FontWeight="Normal" FontStyle="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" />
+        <TextBox  Background="{x:Null}" Margin="89,49,54,202" FontFamily="Arial" Text="{Binding CurrentSong}" PlaceholderText="DefaultSong - DefaultArtist" PlaceholderForeground="White" FontSize="50" FontWeight="Normal" FontStyle="Normal" HorizontalTextAlignment="Center" TextAlignment="Center" Foreground="White" FocusVisualPrimaryBrush="White" Grid.Row="1" Height="83" />
+        <Button Name="ButtonReverse" Height="125" Width="125" Margin="100,157,0,0" VerticalAlignment="Top" Grid.Row="1" Click="ButtonReverse" Background="{x:Null}">
+            <Image x:Name="image" HorizontalAlignment="Center" Height="100" Margin="0,7,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows-reverse.png" Stretch="Fill"/>
+        </Button>
+        <Button Name="ButtonPlay" Height="125" Width="125" Margin="327,157,0,0" VerticalAlignment="Top" Grid.Row="1" Click="ButtonPlay" Background="{x:Null}">
+            <Image x:Name="image1" HorizontalAlignment="Center" Height="100" Grid.Row="1" VerticalAlignment="Center" Width="100" Source="/Img/right-arrow.png"/>
+        </Button>
+        <Button Name="ButtonFoward" Height="125" Width="125" Margin="558,157,0,0" VerticalAlignment="Top" Grid.Row="1" Click="ButtonForward" Background="{x:Null}">
+            <Image x:Name="image2" HorizontalAlignment="Center" Height="100" Margin="0,12,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows.png"/>
+        </Button>
 
+        <!--Queue list of songs-->
         <Rectangle Grid.Row="2" Fill="LightGray" Margin="40,10,10,25"/>
         <Rectangle HorizontalAlignment="Left" Height="241" Margin="55,58,0,0" Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="675" Fill="White"/>
         <ListView x:Name="listViewQueue" Grid.Row="2" Margin="70,58,40,35" FontFamily="Arial" FontSize="25">
@@ -43,16 +55,17 @@
         </ListView>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Margin="0,20,0,0" Grid.Row="2" Text="Queue" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25"/>
 
-
+        <!--List of people that have joined the room-->
         <Rectangle Grid.Column="1" Fill="LightGray" Margin="10,10,40,25" Grid.Row="1"/>
         <Rectangle HorizontalAlignment="Left" Height="241" Margin="23,58,0,0" Stroke="Black" VerticalAlignment="Top" Width="675" Fill="White" Grid.Column="1" Grid.Row="1"/>
-        <TextBlock x:Name="textBlock2" HorizontalAlignment="Center" Margin="0,20,0,0" Grid.Row="1" Text="1/10" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25" Grid.Column="1"/>
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Center" Margin="0,20,0,0" Grid.Row="1" Text="{Binding LobbyCount}" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25" Grid.Column="1"/>
         <ListView x:Name="listViewUsers" Grid.Row="1" Margin="41,58,69,36" FontFamily="Arial" FontSize="25" Grid.Column="1">
             <ListViewItem BorderThickness="0 0 0 2" BorderBrush="Black" Content="Rob Loves" FontFamily="Arial" FontSize="25"/>
             <ListViewItem BorderThickness="0 0 0 2" BorderBrush="Black" Content="Gerjan van Oenen" FontFamily="Arial" FontSize="25"/>
             <ListViewItem BorderThickness="0 0 0 2" BorderBrush="Black" Content="Jan Doornbos" FontFamily="Arial" FontSize="25"/>
         </ListView>
 
+        <!--Chat area-->
         <Rectangle Grid.Row="2" Fill="LightGray" Margin="10,10,40,25" Grid.Column="1"/>
         <Rectangle HorizontalAlignment="Left" Height="241" Margin="23,58,0,0" Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="675" Fill="White" Grid.Column="1"/>
         <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="336,20,0,0" Grid.Row="2" Text="Chat" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25" Grid.Column="1"/>
@@ -60,14 +73,5 @@
             <ListViewItem BorderThickness="0 0 0 2" BorderBrush="Black" Content="Rob Loves: Dikke Beat" FontFamily="Arial" FontSize="25"/>
             <ListViewItem BorderThickness="0 0 0 2" BorderBrush="Black" Content="Gerjan van Oenen: Echt he dikke song" FontFamily="Arial" FontSize="25"/>
         </ListView>
-
-        <Image x:Name="image" HorizontalAlignment="Left" Height="100" Margin="100,182,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows-reverse.png" Stretch="Fill"/>
-        <Image x:Name="image1" HorizontalAlignment="Center" Height="100" Margin="0,182,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/right-arrow.png"/>
-        <Image x:Name="image2" HorizontalAlignment="Left" Height="100" Margin="555,182,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows.png"/>
-
-
-
-
-
     </Grid>
 </Page>
