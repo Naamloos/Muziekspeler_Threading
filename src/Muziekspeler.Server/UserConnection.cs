@@ -42,7 +42,7 @@ namespace Muziekspeler.Server
             await this.connection.SendPacketAsync(packet);
         }
 
-        public async Task SendRoomList(List<string> rooms)
+        public async Task SendRoomList()
         {
             await this.SendPacketAsync(new Packet(PacketType.RoomList, new RoomListData() { RoomNames = this.server.Rooms.Select(x => x.Name).ToList() }));
         }
@@ -89,8 +89,7 @@ namespace Muziekspeler.Server
                     break;
 
                 case PacketType.RoomList:
-                    data = packet.Data.ToObject<RoomListData>();
-                    await SendRoomList(new List<string>() { "refresh test" });
+                    await SendRoomList();
                     break;
 
                 case PacketType.JoinRoom:
