@@ -99,6 +99,7 @@ namespace Muziekspeler.Server
                 case PacketType.LeaveRoom:
                     // Has no data
                     room.Users.Remove(this.user);
+                    await server.sendRoomUpdate(room);
                     break;
 
                 case PacketType.RoomUpdate:
@@ -125,6 +126,7 @@ namespace Muziekspeler.Server
 
                 case PacketType.SkipSong:
                     // Just indicates skip song command
+                    await room.NextSongAsync();
                     break;
 
                 case PacketType.CreateRoom:
