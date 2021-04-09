@@ -1,6 +1,8 @@
-﻿using Muziekspeler.UWP.Connectivity;
+﻿using Muziekspeler.Common.Types;
+using Muziekspeler.UWP.Connectivity;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -24,6 +26,9 @@ namespace Muziekspeler.UWP
     public sealed partial class RoomView : Page
     {
         private Client client;
+        private ObservableCollection<string> chat;
+        private ObservableCollection<QueueSong> songqueue;
+        private ObservableCollection<User> userlist;
 
         public RoomView()
         {
@@ -43,7 +48,42 @@ namespace Muziekspeler.UWP
 
         private void hookEvents()
         {
+            client.ChatMessageReceived += Client_ChatMessageReceived;
+            client.PausePlaying += Client_PausePlaying;
+            client.RoomUpdated += Client_RoomUpdated;
+            client.ServerError += Client_ServerError;
+            client.StartPlaying += Client_StartPlaying;
+        }
 
+        private void Client_StartPlaying(Common.Packets.StartPlayingData data)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Client_ServerError(Common.Packets.ReasonData data)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Client_RoomUpdated(Common.Types.Room data)
+        {
+            this.songqueue.Clear();
+            foreach(var song in data.SongQueue)
+            {
+                this.songqueue.Add(song);
+            }
+
+            this.userlist.Clear();
+        }
+
+        private void Client_PausePlaying()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Client_ChatMessageReceived(Common.Packets.ChatMessageData data)
+        {
+            throw new NotImplementedException();
         }
 
         private void unhookEvents()

@@ -26,8 +26,6 @@ using Windows.Media.Core;
 using Windows.Media.Audio;
 using Windows.Media.MediaProperties;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace Muziekspeler.UWP
 {
     /// <summary>
@@ -47,17 +45,30 @@ namespace Muziekspeler.UWP
             Client = Client.Get();
 
             HookClientEvents();
+            requestRooms();
             roomList.ItemsSource = Rooms;
         }
 
         private void HookClientEvents()
         {
             Client.RoomListUpdate += Client_RoomListUpdate;
+            Client.JoinRoom += Client_JoinRoom;
+        }
+
+        private void Client_JoinRoom(JoinRoomData data)
+        {
+            goToRoomView();
         }
 
         private void UnhookClientEvents()
         {
             Client.RoomListUpdate -= Client_RoomListUpdate;
+            Client.JoinRoom -= Client_JoinRoom;
+        }
+
+        private async void requestRooms()
+        {
+            await Client.ServerConnection.SendPacketAsync(new Packet(PacketType.RoomList, null));
         }
 
         private async void Client_RoomListUpdate(RoomListData data)
@@ -72,9 +83,9 @@ namespace Muziekspeler.UWP
         public void listRooms(List<string> rooms)
         {
             //ListView roomList = new ListView();
-            //Rooms.Clear();
+            Rooms.Clear();
             foreach(string room in rooms)
-                this.Rooms.Add(room);
+                Rooms.Add(room);
             return;
         }
 
@@ -88,21 +99,25 @@ namespace Muziekspeler.UWP
             });
         }
 
-        private void hostRoom(object sender, RoutedEventArgs e)
+        private async void hostRoom(object sender, RoutedEventArgs e)
         {
             // do stuff to host a new room
-            goToRoomView();
+            await Client.ServerConnection.SendPacketAsync(new Packet(PacketType.CreateRoom, new CreateRoomData() { Name = new Random().Next().ToString() }));
+            // if creation is successful, server tells client to join
         }
 
-        private void joinRoom(object sender, RoutedEventArgs e)
+        private async void joinRoom(object sender, RoutedEventArgs e)
         {
             // do stuff to join existing room
-            goToRoomView();
+            string selected = (string)roomList.SelectedItem;
+            if (!string.IsNullOrEmpty(selected))
+                await Client.ServerConnection.SendPacketAsync(new Packet(PacketType.JoinRoom, new JoinRoomData() { RoomName = selected }));
+            // Server should tell the client to join if all is OK
         }
 
-        private async void refreshRoomList(object sender, RoutedEventArgs e)
+        private void refreshRoomList(object sender, RoutedEventArgs e)
         {
-            await Client.ServerConnection.SendPacketAsync(new Packet(PacketType.RoomList, null));
+            requestRooms();
         }
 
         private void quit_btn_Click(object sender, RoutedEventArgs e)

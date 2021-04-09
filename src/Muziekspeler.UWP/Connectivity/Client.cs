@@ -65,7 +65,7 @@ namespace Muziekspeler.UWP.Connectivity
             ServerConnection = new Connection(tcp, handlePacketAsync);
             ServerConnection.StartClientLoop();
 
-            await Task.Delay(1000);
+            await Task.Delay(500);
         }
 
         private async Task handlePacketAsync(Packet packet) // TODO add behavior
@@ -171,7 +171,7 @@ namespace Muziekspeler.UWP.Connectivity
             if(_instance == null)
             {
                 _instance = new Client();
-                _ = Task.Run(async () => await _instance.ConnectAsync());
+                Task.Run(async () => await _instance.ConnectAsync()).Wait();
             }
 
             return _instance;

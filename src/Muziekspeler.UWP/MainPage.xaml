@@ -37,13 +37,13 @@
 
         <SearchBox x:Name="search" FocusOnKeyboardInput="True" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Height="70" Width="400" />
 
-        <Rectangle Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3" Fill="LightGray"/>
-        <ListBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3" Margin="10,10,10,10" Background="#FF9A9A9A">
-            <ListView x:Name="roomList" ScrollViewer.HorizontalScrollBarVisibility="Auto" Grid.ColumnSpan="3" Margin="0,30,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Width="859">
-                <ListViewItem HorizontalAlignment="Center">with several</ListViewItem>
-            </ListView>
+        <Rectangle Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="4" Fill="LightGray" Margin="0,10,0,156"/>
+        <ListBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3" Margin="10,20,10,0" Background="#FF9A9A9A" x:Name="roomList">
+
+            <ListViewItem HorizontalAlignment="Center">with several</ListViewItem>
+
         </ListBox>
-        <TextBlock Grid.Row="2" Grid.Column="2" FontWeight="SemiBold" Text="Roomlist" FontFamily="Segoe UI" FontSize="30" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Row="1" Grid.Column="2" FontWeight="SemiBold" Text="Roomlist" FontFamily="Segoe UI" FontSize="30" Margin="0,137,0,40" HorizontalAlignment="Center" Grid.RowSpan="2"/>
         <Button Content="Refresh" Grid.Column="3" Margin="238,130,0,0" Grid.Row="1" VerticalAlignment="Top" Click="refreshRoomList"/>
     </Grid>
 </Page>
