@@ -11,10 +11,13 @@ namespace Muziekspeler.Server
     public class ServerRoom : Room
     {
         private Server server;
+        private bool done = false;
 
         public ServerRoom(Server server)
         {
             this.server = server;
+            this.Users = new List<User>();
+            this.SongQueue = new Queue<QueueSong>();
         }
 
         public async Task BroadcastPacketAsync(Packet packet) => await server.BroadcastRoomAsync(this, packet);
@@ -32,22 +35,14 @@ namespace Muziekspeler.Server
             if (SongQueue.Count() <= 0)
                 return;
 
-            SongQueue.Dequeue();
             var song = SongQueue.Peek();
-            await BroadcastPacketAsync(new Packet(PacketType.RoomUpdate, new RoomUpdateData()
+
+            await server.sendRoomUpdate(this);
+
+            await server.BroadcastRoomAsync(this, new Packet(PacketType.StartPlaying, new StartPlayingData()
             {
-                HostId = this.HostUserId,
-                Queue = this.SongQueue,
-                Users = this.Users
+                SongToPlay = song
             }));
-            var user = this.Users.FirstOrDefault(x => x.Id == song.UserId);
-            if(user != null)
-            {
-                await server.SendPacketToUserAsync(user.Id, new Packet(PacketType.StartPlaying, new StartPlayingData()
-                {
-                    SongToPlay = song
-                }));
-            }
         }
 
         public async Task QueueSongAsync(QueueSong song)
@@ -56,6 +51,7 @@ namespace Muziekspeler.Server
 
             if (SongQueue.Count() == 1)
                 await NextSongAsync();
+            await server.sendRoomUpdate(this);
         }
 
         public async Task HandleChatAsync(ChatMessageData chat)

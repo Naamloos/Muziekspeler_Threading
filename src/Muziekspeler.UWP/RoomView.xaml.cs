@@ -1,4 +1,5 @@
-﻿using Muziekspeler.Common.Types;
+﻿using Muziekspeler.Common.Packets;
+using Muziekspeler.Common.Types;
 using Muziekspeler.UWP.Connectivity;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -26,15 +28,25 @@ namespace Muziekspeler.UWP
     public sealed partial class RoomView : Page
     {
         private Client client;
-        private ObservableCollection<string> chat;
-        private ObservableCollection<QueueSong> songqueue;
-        private ObservableCollection<User> userlist;
+        private ObservableCollection<string> chat = new ObservableCollection<string>();
+        private ObservableCollection<QueueSong> songqueue = new ObservableCollection<QueueSong>();
+        private ObservableCollection<User> userlist = new ObservableCollection<User>();
 
         public RoomView()
         {
             this.InitializeComponent();
             client = Client.Get();
             hookEvents();
+            player.MediaEnded += Player_MediaEnded;
+
+            this.listViewChat.ItemsSource = chat;
+            this.listViewQueue.ItemsSource = songqueue;
+            this.listViewUsers.ItemsSource = userlist;
+        }
+
+        private async void Player_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            await client.ServerConnection.SendPacketAsync(new Common.Packets.Packet(Common.Packets.PacketType.Done, null));
         }
 
         private void leaveButton(object sender, RoutedEventArgs e)
@@ -42,8 +54,20 @@ namespace Muziekspeler.UWP
             leaveRoom();
         }
 
-        private void enqueueButton(object sender, RoutedEventArgs e)
+        private async void enqueueButton(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                var newuri = new Uri(this.urlinput.Text);
+                await client.ServerConnection.SendPacketAsync(new Packet(PacketType.QueueSong, new QueueSongData() { Song = newuri.ToString() }));
+            }
+            catch (Exception)
+            {
+                RunOnUi(async () =>
+                {
+                    _ = new MessageDialog($"That URI seems invalid! :(").ShowAsync();
+                });
+            }
         }
 
         private void hookEvents()
@@ -55,14 +79,31 @@ namespace Muziekspeler.UWP
             client.StartPlaying += Client_StartPlaying;
         }
 
+        private async void RunOnUi(Action action)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+            () =>
+            {
+                action();
+            });
+        }
+
         private void Client_StartPlaying(Common.Packets.StartPlayingData data)
         {
-            throw new NotImplementedException();
+            RunOnUi(() =>
+            {
+                this.player.Stop();
+                this.player.Source = new Uri(data.SongToPlay.Path);
+                this.player.Play();
+            });
         }
 
         private void Client_ServerError(Common.Packets.ReasonData data)
         {
-            throw new NotImplementedException();
+            RunOnUi(async () => 
+            {
+                _ = new MessageDialog($"Server did an oopsie! {data.Reason}").ShowAsync();
+            });
         }
 
         private void Client_RoomUpdated(Common.Types.Room data)
@@ -78,17 +119,21 @@ namespace Muziekspeler.UWP
 
         private void Client_PausePlaying()
         {
-            throw new NotImplementedException();
+            // /shrug
         }
 
         private void Client_ChatMessageReceived(Common.Packets.ChatMessageData data)
         {
-            throw new NotImplementedException();
+            this.chat.Add($"{data.Message}");
         }
 
         private void unhookEvents()
         {
-
+            client.ChatMessageReceived -= Client_ChatMessageReceived;
+            client.PausePlaying -= Client_PausePlaying;
+            client.RoomUpdated -= Client_RoomUpdated;
+            client.ServerError -= Client_ServerError;
+            client.StartPlaying -= Client_StartPlaying;
         }
 
         private async void leaveRoom()

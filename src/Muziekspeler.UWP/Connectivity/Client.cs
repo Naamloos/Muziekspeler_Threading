@@ -88,7 +88,7 @@ namespace Muziekspeler.UWP.Connectivity
 
                 case PacketType.JoinRoom:
                     data = packet.Data.ToObject<JoinRoomData>();
-                    CurrentRoom.Name = ((JoinRoomData)data).RoomName;
+                    CurrentRoom = new ClientRoom(((JoinRoomData)data).RoomName, this);
                     if (JoinRoom != null)
                         JoinRoom((JoinRoomData)data);
                     break;

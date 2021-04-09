@@ -44,6 +44,53 @@ namespace Muziekspeler.Server
             }
         }
 
+        public async Task JoinRoom(UserConnection connection, JoinRoomData data)
+        {
+            if (!this.Rooms.Any(x => x.Name == data.RoomName))
+            {
+                await connection.SendPacketAsync(new Packet(PacketType.Fail, new ReasonData() { Reason = "Room no longer exists!" }));
+                return;
+            }
+
+            var room = Rooms.First(x => x.Name == data.RoomName);
+            room.Users.Add(connection.GetUser());
+
+            connection.SetRoom(room);
+
+            await connection.SendPacketAsync(new Packet(PacketType.JoinRoom, null));
+            await Task.Delay(1500);
+            await sendRoomUpdate(room);
+        }
+
+        public async Task CreateRoomAndJoin(UserConnection connection, CreateRoomData data)
+        {
+            if(this.Rooms.Any(x => x.Name == data.Name))
+            {
+                await connection.SendPacketAsync(new Packet(PacketType.Fail, new ReasonData() { Reason = "Room name already taken!" }));
+                return;
+            }
+
+            var room = new ServerRoom(this);
+            room.Name = data.Name;
+            room.HostUserId = connection.GetUser().Id;
+            room.Users.Add(connection.GetUser());
+            connection.SetRoom(room);
+
+            await connection.SendPacketAsync(new Packet(PacketType.JoinRoom, null));
+            await Task.Delay(1500);
+            await sendRoomUpdate(room);
+        }
+
+        public async Task sendRoomUpdate(ServerRoom room)
+        {
+            await room.BroadcastPacketAsync(new Packet(PacketType.RoomUpdate, new RoomUpdateData()
+            {
+                HostId = room.HostUserId,
+                Queue = room.SongQueue,
+                Users = room.Users
+            }));
+        }
+
         public async Task BroadcastRoomAsync(ServerRoom room, Packet packet)
         {
             await Task.Yield();

@@ -3,6 +3,7 @@ using Muziekspeler.Common.Packets;
 using Muziekspeler.Common.Types;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,12 @@ namespace Muziekspeler.Server
             return this.user;
         }
 
+        public ServerRoom GetRoom() => room;
+        public void SetRoom(ServerRoom room)
+        {
+            this.room = room;
+        }
+
         public async Task SendPacketAsync(Packet packet)
         {
             await this.connection.SendPacketAsync(packet);
@@ -37,7 +44,7 @@ namespace Muziekspeler.Server
 
         public async Task SendRoomList(List<string> rooms)
         {
-            await this.SendPacketAsync(new Packet(PacketType.RoomList, new RoomListData() { RoomNames = rooms }));
+            await this.SendPacketAsync(new Packet(PacketType.RoomList, new RoomListData() { RoomNames = this.server.Rooms.Select(x => x.Name).ToList() }));
         }
 
         public async Task SendDataAsync(byte[] data)
@@ -87,7 +94,7 @@ namespace Muziekspeler.Server
                     break;
 
                 case PacketType.JoinRoom:
-                    data = packet.Data.ToObject<JoinRoomData>();
+                    await server.JoinRoom(this, packet.Data.ToObject<JoinRoomData>());
                     break;
 
                 case PacketType.LeaveRoom:
@@ -122,7 +129,7 @@ namespace Muziekspeler.Server
                     break;
 
                 case PacketType.CreateRoom:
-                    data = packet.Data.ToObject<CreateRoomData>();
+                    await server.CreateRoomAndJoin(this, packet.Data.ToObject<CreateRoomData>());
                     break;
 
                 case PacketType.SetUserData:
@@ -131,12 +138,26 @@ namespace Muziekspeler.Server
                     break;
 
                 case PacketType.Done:
-                    // TODO Make next user play song
+                    if (this.room.HostUserId == this.user.Id)
+                    {
+                        room.SongQueue.Dequeue();
+                        await room.NextSongAsync();
+                    }
                     break;
 
                 case PacketType.EncodingData:
                     await this.SendPacketAsync(packet);
                     //await this.Room.BroadcastPacketAsync(packet);
+                    break;
+
+                case PacketType.QueueSong:
+                    var song = new QueueSong()
+                    {
+                        Path = packet.Data.ToObject<QueueSongData>().Song,
+                        UserId = this.user.Id
+                    };
+
+                    await room.QueueSongAsync(song);
                     break;
             }
         }
