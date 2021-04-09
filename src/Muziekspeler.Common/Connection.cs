@@ -68,14 +68,21 @@ namespace Muziekspeler.Common
 
         public async Task SendPacketAsync(Packet packet)
         {
-            await Task.Yield(); // begone squiggly line
-            semaphore.WaitOne();
-            // Send packet
-            var stream = packetStream.GetStream();
-            var writer = new BinaryWriter(stream);
-            writer.Write(true); // tell other end that this is a packet and not media.
-            writer.Write(JsonConvert.SerializeObject(packet));
-            semaphore.Release();
+            try
+            {
+                await Task.Yield(); // begone squiggly line
+                semaphore.WaitOne();
+                // Send packet
+                var stream = packetStream.GetStream();
+                var writer = new BinaryWriter(stream);
+                writer.Write(true); // tell other end that this is a packet and not media.
+                writer.Write(JsonConvert.SerializeObject(packet));
+            }
+            catch (Exception ex) { }
+            finally
+            {
+                semaphore.Release();
+            }
         }
 
         public async Task SendDataAsync(byte[] data)

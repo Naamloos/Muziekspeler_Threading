@@ -83,6 +83,7 @@ namespace Muziekspeler.Server
 
                 case PacketType.RoomList:
                     data = packet.Data.ToObject<RoomListData>();
+                    await SendRoomList(new List<string>() { "refresh test" });
                     break;
 
                 case PacketType.JoinRoom:

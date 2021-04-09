@@ -35,7 +35,7 @@ namespace Muziekspeler.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public List<string> Rooms = new List<string>();
+        public ObservableCollection<string> Rooms = new ObservableCollection<string>();
         public List<User> users;
         public List<QueueSong> queueSongs;
         public Client Client;
@@ -69,11 +69,28 @@ namespace Muziekspeler.UWP
             });
         }
 
-        public void listRooms(List<string> Rooms)
+        public void listRooms(List<string> rooms)
         {
             //ListView roomList = new ListView();
-            roomList.ItemsSource = Rooms;
+            //Rooms.Clear();
+            foreach(string room in rooms)
+                this.Rooms.Add(room);
             return;
+        }
+
+        private void hostRoom(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void joinRoom(object sender, RoutedEventArgs e)
+        {
+            string selected = (string)roomList.SelectedItem;
+        }
+
+        private async void refreshRoomList(object sender, RoutedEventArgs e)
+        {
+            await Client.ServerConnection.SendPacketAsync(new Packet(PacketType.RoomList, null));
         }
 
         private void quit_btn_Click(object sender, RoutedEventArgs e)
