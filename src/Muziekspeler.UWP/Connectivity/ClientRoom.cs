@@ -15,6 +15,7 @@ namespace Muziekspeler.UWP.Connectivity
         public ClientRoom(string name, Client client)
         {
             this.Name = name;
+            this.client = client;
         }
 
         public void UpdateRoomData(RoomUpdateData data)
