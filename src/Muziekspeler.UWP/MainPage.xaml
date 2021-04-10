@@ -189,7 +189,7 @@
             <ListViewItem HorizontalAlignment="Center">with several</ListViewItem>
 
         </ListBox>
-        <TextBlock x:Name="roomListText" Grid.Row="1" FontWeight="SemiBold" Text="Roomlist" FontFamily="Segoe UI" FontSize="30" Foreground="White"  HorizontalAlignment="Center" Grid.RowSpan="2" Margin="0,139,0,160" Grid.Column="2" />
+        <TextBlock x:Name="roomListText" Grid.Row="1" FontWeight="SemiBold" Text="Roomlist" FontFamily="Segoe UI" FontSize="30" Foreground="White"  HorizontalAlignment="Center" Grid.RowSpan="4" Margin="0,139,0,160" Grid.Column="2" />
         <Button x:Name="refresh" Content="Refresh" Grid.Column="3" Margin="200,117,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Height="50" Foreground="White" Background="#234F1E" Click="refreshRoomList" Grid.RowSpan="2"/>
     </Grid>
 </Page>
