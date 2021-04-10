@@ -11,29 +11,30 @@
     <!--Grid Definitions-->
     <Grid Background="#98BF64" Height="1000" Width="1500">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="750*" />
+            <ColumnDefinition Width="739*" />
+            <ColumnDefinition Width="11*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <Rectangle Fill="#98BF64" Grid.Row="0" Margin="0,0,0,125" Grid.ColumnSpan="2"/>
-        <Image Source="/Img/music-row.png" Grid.ColumnSpan="2" Margin="375,-73,375,73" />
-        <Canvas Grid.ColumnSpan="2" Margin="10,10,10,125">
+        <Rectangle Fill="#98BF64" Grid.Row="0" Margin="0,0,0,125" Grid.ColumnSpan="3"/>
+        <Image Source="/Img/music-row.png" Grid.ColumnSpan="2" Margin="375,-73,364,73" />
+        <Canvas Grid.ColumnSpan="3" Margin="10,10,10,125">
             <Ellipse Width="225" Height="115" Stroke="White" StrokeThickness="2" Fill="#234F1E" Canvas.Left="627" Canvas.Top="42"/>
-            <TextBlock x:Name="TitleText" Canvas.Left="645" Canvas.Top="71" Text="limeplayer" TextWrapping="Wrap" FontFamily="Comic Sans MS" FontSize="40" Foreground="White"/>
+            <TextBlock x:Name="TitleText" Canvas.Left="655" Canvas.Top="80" Text="Limeplayer" TextWrapping="Wrap" FontFamily="Arial" FontSize="35" Foreground="White"/>
         </Canvas>
 
         <!--Buttons for the upload and leave function-->
         <Button Background="#234F1E" x:Name="button" Content="LEAVE" Margin="10,223,0,0" VerticalAlignment="Top" Height="100" Width="250" Grid.Column="1"  FontFamily="Arial" FontSize="40" FontWeight="Normal" Foreground="White" Click="leaveButton"/>
-        <Button Background="#234F1E" x:Name="button_Copy" Content="ENQUEUE" Margin="490,223,0,0" VerticalAlignment="Top" Height="100" Width="250" FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="enqueueButton"/>
+        <Button Background="#234F1E" x:Name="button_Copy" Content="ENQUEUE" Margin="495,223,0,0" VerticalAlignment="Top" Height="100" Width="250" FontFamily="Arial" FontSize="40" FontWeight="Normal" Foreground="White" Click="enqueueButton"/>
 
-        <Rectangle Grid.Row="1" Fill="LightGray" Margin="40,10,10,25"/>
-        <Rectangle Grid.Row="1" Fill="#234F1E" Margin="55,20,20,35"/>
-        <Rectangle Grid.Row="1" Fill="Black" Margin="55,49,20,202"/>
-        <TextBox x:Name="songname" Background="{x:Null}" Margin="89,49,54,202" FontFamily="Arial" Text="{Binding CurrentSong}" PlaceholderText="DefaultSong - DefaultArtist" PlaceholderForeground="White" FontSize="50" FontWeight="Normal" FontStyle="Normal" HorizontalTextAlignment="Center" TextAlignment="Center" Foreground="White" FocusVisualPrimaryBrush="White" Grid.Row="1" Height="83" />
+        <Rectangle Grid.Row="1" Fill="LightGray" Margin="40,10,10,24"/>
+        <Rectangle Grid.Row="1" Fill="#234F1E" Margin="55,20,20,34"/>
+        <Rectangle Grid.Row="1" Fill="Black" Margin="55,49,20,201"/>
+        <TextBox x:Name="songname" Background="{x:Null}" Margin="89,49,53,201" FontFamily="Arial" Text="{Binding CurrentSong}" PlaceholderText="DefaultSong - DefaultArtist" PlaceholderForeground="White" FontSize="50" FontWeight="Normal" FontStyle="Normal" HorizontalTextAlignment="Center" TextAlignment="Center" Foreground="White" FocusVisualPrimaryBrush="White" Grid.Row="1" Height="83" />
         <Button x:Name="ButtonReverse" Height="125" Width="125" Margin="100,157,0,0" VerticalAlignment="Top" Grid.Row="1" Background="{x:Null}">
             <Image x:Name="image" HorizontalAlignment="Center" Height="100" Margin="0,7,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows-reverse.png" Stretch="Fill"/>
         </Button>
@@ -46,29 +47,28 @@
 
         <!--Queue list of songs-->
         <Rectangle Grid.Row="2" Fill="LightGray" Margin="40,10,10,25"/>
-        <Rectangle HorizontalAlignment="Left" Height="241" Margin="55,58,0,0" Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="675" Fill="White"/>
-        <ListBox x:Name="listViewQueue" Foreground="Black" Grid.Row="2" Margin="70,58,40,35" FontFamily="Arial" FontSize="25">
-        </ListBox>
+        <Rectangle HorizontalAlignment="Left" Height="241" Margin="55,58,0,0" Grid.Row="2" Stroke="#234F1E" VerticalAlignment="Top" Width="675" Fill="White"/>
+        <ListBox x:Name="listViewQueue" Foreground="White" Grid.Row="2" Margin="55,58,20,34" FontFamily="Arial" FontSize="25"></ListBox>
         <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Margin="0,20,0,0" Grid.Row="2" Text="Queue" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25"/>
 
         <!--List of people that have joined the room-->
-        <Rectangle Grid.Column="1" Fill="LightGray" Margin="10,10,40,25" Grid.Row="1"/>
+        <Rectangle Grid.Column="1" Fill="LightGray" Margin="10,10,29,24" Grid.Row="1"/>
         <Rectangle HorizontalAlignment="Left" Height="241" Margin="23,58,0,0" Stroke="Black" VerticalAlignment="Top" Width="675" Fill="White" Grid.Column="1" Grid.Row="1"/>
-        <TextBlock x:Name="textBlock2" HorizontalAlignment="Center" Margin="0,20,0,0" Grid.Row="1" Text="{Binding LobbyCount}" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25" Grid.Column="1"/>
-        <ListBox x:Name="listViewUsers" Foreground="Black" Grid.Row="1" Margin="41,58,69,36" FontFamily="Arial" FontSize="25" Grid.Column="1">
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="375,20,0,0" Grid.Row="1" Text="{Binding LobbyCount}" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25" Grid.Column="1"/>
+        <ListBox ItemContainerStyle="{StaticResource ListBoxItemContainerStyle1}" x:Name="listViewUsers" Foreground="White" Grid.Row="1" Margin="24,58,39,33" FontFamily="Arial" FontSize="25" Grid.Column="1">
         </ListBox>
 
         <!--Chat area-->
-        <Rectangle Grid.Row="2" Fill="LightGray" Margin="10,10,40,25" Grid.Column="1"/>
+        <Rectangle Grid.Row="2" Fill="LightGray" Margin="10,10,29,25" Grid.Column="1"/>
         <Rectangle HorizontalAlignment="Left" Height="241" Margin="23,58,0,0" Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="675" Fill="White" Grid.Column="1"/>
         <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="336,20,0,0" Grid.Row="2" Text="Chat" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25" Grid.Column="1"/>
-        <ListBox x:Name="listViewChat" Foreground="Black" Grid.Row="2" Margin="42,58,68,100" FontFamily="Arial" FontSize="25" Grid.Column="1">
+        <ListBox x:Name="listViewChat" Foreground="White" Grid.Row="2" Margin="23,58,40,100" FontFamily="Arial" FontSize="25" Grid.Column="1">
         </ListBox>
 
-        <MediaElement x:Name="player" Grid.Column="1" HorizontalAlignment="Left" Height="100" Margin="875,40,0,0" VerticalAlignment="Top" Width="100"/>
+        <MediaElement x:Name="player" Grid.Column="2" HorizontalAlignment="Left" Height="100" Margin="136,40,0,0" VerticalAlignment="Top" Width="100"/>
 
         <TextBox x:Name="urlinput" HorizontalAlignment="Left" Margin="145,249,0,0" Text="https://naamloos.dev/test.wav" PlaceholderText="MP3 URL HERE" TextWrapping="Wrap" VerticalAlignment="Top" Height="49" Width="320" InputScope="Url"/>
-        <Button Background="#234F1E" x:Name="sendButton" Content="send" Margin="545,249,0,0" VerticalAlignment="Top" Height="37" Width="136" Grid.Column="1"  FontFamily="Arial" FontSize="20" FontWeight="Normal" Foreground="White" Click="sendButton_Click" Grid.Row="2"/>
+        <Button Background="#234F1E" x:Name="sendButton" Content="send" Margin="554,250,0,0" VerticalAlignment="Top" Height="37" Width="136" Grid.Column="1"  FontFamily="Arial" FontSize="20" FontWeight="Normal" Foreground="White" Click="sendButton_Click" Grid.Row="2"/>
         <TextBox x:Name="chatBox" Grid.Column="1" HorizontalAlignment="Left" Margin="42,252,0,0" Grid.Row="2" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="498" PlaceholderText="Enter chat ..." />
 
     </Grid>
