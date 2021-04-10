@@ -21,10 +21,10 @@
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <Rectangle Fill="#98BF64" Grid.Row="0" Margin="0,0,0,125" Grid.ColumnSpan="3"/>
-        <Image Source="/Img/music-row.png" Grid.ColumnSpan="2" Margin="375,-73,364,73" />
+        <Image Source="/Img/music-row.png" Grid.ColumnSpan="2" Margin="375,-64,364,64" />
         <Canvas Grid.ColumnSpan="3" Margin="10,10,10,125">
-            <Ellipse Width="225" Height="115" Stroke="White" StrokeThickness="2" Fill="#234F1E" Canvas.Left="627" Canvas.Top="42"/>
-            <TextBlock x:Name="TitleText" Canvas.Left="655" Canvas.Top="80" Text="Limeplayer" TextWrapping="Wrap" FontFamily="Arial" FontSize="35" Foreground="White"/>
+            <Ellipse Width="225" Height="115" Stroke="White" StrokeThickness="2" Fill="#234F1E" Canvas.Left="627" Canvas.Top="51"/>
+            <TextBlock x:Name="TitleText" Canvas.Left="655" Canvas.Top="89" Text="Limeplayer" TextWrapping="Wrap" FontFamily="Arial" FontSize="35" Foreground="White"/>
         </Canvas>
 
         <!--Buttons for the upload and leave function-->
@@ -52,7 +52,7 @@
         <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Foreground="White" Margin="0,20,0,0" Grid.Row="2" Text="Queue" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25"/>
 
         <!--List of people that have joined the room-->
-        
+
         <Rectangle Grid.Column="1" Fill="#234F1E" Margin="10,10,29,24" Grid.Row="1"/>
         <TextBlock x:Name="ListView" HorizontalAlignment="Left" Foreground="White" Margin="336,20,0,0" Grid.Row="2" Text="Chat" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25" Grid.Column="1"/>
         <Rectangle HorizontalAlignment="Left" Height="241" Margin="24,58,0,0" VerticalAlignment="Top" Width="674" Fill="White" Grid.Column="1" Grid.Row="1"/>
@@ -69,7 +69,7 @@
 
         <MediaElement x:Name="player" Grid.Column="2" HorizontalAlignment="Left" Height="100" Margin="136,40,0,0" VerticalAlignment="Top" Width="100"/>
 
-        <TextBox x:Name="urlinput" HorizontalAlignment="Left" Margin="145,249,0,0" Text="https://naamloos.dev/test.wav" PlaceholderText="MP3 URL HERE" TextWrapping="Wrap" VerticalAlignment="Top" Height="49" Width="320" InputScope="Url"/>
+        <TextBox x:Name="urlinput" Background="White" Foreground="Black" BorderBrush="#234F1E" HorizontalAlignment="Left" Margin="145,249,0,0" Text="https://naamloos.dev/test.wav" PlaceholderText="MP3 URL HERE" TextWrapping="Wrap" VerticalAlignment="Top" Height="49" Width="320" InputScope="Url"/>
         <Button Background="White" x:Name="sendButton" Content="send" Margin="562,249,0,0" VerticalAlignment="Top" Height="37" Width="136" Grid.Column="1"  FontFamily="Arial" FontSize="20" FontWeight="Normal" Foreground="Black" Click="sendButton_Click" Grid.Row="2"/>
         <TextBox x:Name="chatBox" Background="White" Foreground="Black" Grid.Column="1" HorizontalAlignment="Left" Margin="24,252,0,0" Grid.Row="2" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="516" PlaceholderText="Enter chat ..." />
     </Grid>
