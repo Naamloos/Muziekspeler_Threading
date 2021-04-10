@@ -31,10 +31,10 @@
         <Button Background="#234F1E" x:Name="button" Content="LEAVE" Margin="10,223,0,0" VerticalAlignment="Top" Height="100" Width="250" Grid.Column="1"  FontFamily="Arial" FontSize="40" FontWeight="Normal" Foreground="White" Click="leaveButton"/>
         <Button Background="#234F1E" x:Name="button_Copy" Content="ENQUEUE" Margin="495,223,0,0" VerticalAlignment="Top" Height="100" Width="250" FontFamily="Arial" FontSize="40" FontWeight="Normal" Foreground="White" Click="enqueueButton"/>
 
-        <Rectangle Grid.Row="1" Fill="LightGray" Margin="40,10,10,24"/>
-        <Rectangle Grid.Row="1" Fill="#234F1E" Margin="55,20,20,34"/>
-        <Rectangle Grid.Row="1" Fill="Black" Margin="55,49,20,201"/>
-        <TextBox x:Name="songname" Background="{x:Null}" Margin="89,49,53,201" FontFamily="Arial" Text="{Binding CurrentSong}" PlaceholderText="DefaultSong - DefaultArtist" PlaceholderForeground="White" FontSize="50" FontWeight="Normal" FontStyle="Normal" HorizontalTextAlignment="Center" TextAlignment="Center" Foreground="White" FocusVisualPrimaryBrush="White" Grid.Row="1" Height="83" />
+
+        <Rectangle Grid.Row="1" Fill="#234F1E" Margin="40,10,10,20"/>
+        <Rectangle Grid.Row="1" Fill="Black" Margin="40,49,10,198"/>
+        <TextBox x:Name="songname" Background="{x:Null}" Margin="89,59,53,215" FontFamily="Arial" Text="{Binding CurrentSong}" PlaceholderText="DefaultSong - DefaultArtist" PlaceholderForeground="White" FontSize="50" FontWeight="Normal" FontStyle="Normal" HorizontalTextAlignment="Center" TextAlignment="Center" Foreground="White" FocusVisualPrimaryBrush="White" Grid.Row="1" />
         <Button x:Name="ButtonReverse" Height="125" Width="125" Margin="100,157,0,0" VerticalAlignment="Top" Grid.Row="1" Background="{x:Null}">
             <Image x:Name="image" HorizontalAlignment="Center" Height="100" Margin="0,7,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows-reverse.png" Stretch="Fill"/>
         </Button>
@@ -46,30 +46,31 @@
         </Button>
 
         <!--Queue list of songs-->
-        <Rectangle Grid.Row="2" Fill="LightGray" Margin="40,10,10,25"/>
+        <Rectangle Grid.Row="2" Fill="#234F1E" Margin="40,10,10,25"/>
         <Rectangle HorizontalAlignment="Left" Height="241" Margin="55,58,0,0" Grid.Row="2" Stroke="#234F1E" VerticalAlignment="Top" Width="675" Fill="White"/>
-        <ListBox x:Name="listViewQueue" Foreground="White" Grid.Row="2" Margin="55,58,20,34" FontFamily="Arial" FontSize="25"></ListBox>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Margin="0,20,0,0" Grid.Row="2" Text="Queue" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25"/>
+        <ListBox x:Name="listViewQueue" Background="White" Foreground="Black" Grid.Row="2" Margin="55,58,20,34" FontFamily="Arial" FontSize="25"></ListBox>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Foreground="White" Margin="0,20,0,0" Grid.Row="2" Text="Queue" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25"/>
 
         <!--List of people that have joined the room-->
-        <Rectangle Grid.Column="1" Fill="LightGray" Margin="10,10,29,24" Grid.Row="1"/>
-        <Rectangle HorizontalAlignment="Left" Height="241" Margin="23,58,0,0" Stroke="Black" VerticalAlignment="Top" Width="675" Fill="White" Grid.Column="1" Grid.Row="1"/>
+        
+        <Rectangle Grid.Column="1" Fill="#234F1E" Margin="10,10,29,24" Grid.Row="1"/>
+        <TextBlock x:Name="ListView" HorizontalAlignment="Left" Foreground="White" Margin="336,20,0,0" Grid.Row="2" Text="Chat" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25" Grid.Column="1"/>
+        <Rectangle HorizontalAlignment="Left" Height="241" Margin="24,58,0,0" VerticalAlignment="Top" Width="674" Fill="White" Grid.Column="1" Grid.Row="1"/>
         <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="375,20,0,0" Grid.Row="1" Text="{Binding LobbyCount}" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25" Grid.Column="1"/>
-        <ListBox ItemContainerStyle="{StaticResource ListBoxItemContainerStyle1}" x:Name="listViewUsers" Foreground="White" Grid.Row="1" Margin="24,58,39,33" FontFamily="Arial" FontSize="25" Grid.Column="1">
+        <ListBox Background="White" x:Name="listViewUsers" Foreground="Black" Grid.Row="1" Margin="24,58,39,33" FontFamily="Arial" FontSize="25" Grid.Column="1">
         </ListBox>
 
         <!--Chat area-->
-        <Rectangle Grid.Row="2" Fill="LightGray" Margin="10,10,29,25" Grid.Column="1"/>
-        <Rectangle HorizontalAlignment="Left" Height="241" Margin="23,58,0,0" Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="675" Fill="White" Grid.Column="1"/>
-        <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="336,20,0,0" Grid.Row="2" Text="Chat" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25" Grid.Column="1"/>
-        <ListBox x:Name="listViewChat" Foreground="White" Grid.Row="2" Margin="23,58,40,100" FontFamily="Arial" FontSize="25" Grid.Column="1">
+        <Rectangle Grid.Row="2" Fill="#234F1E" Margin="10,10,29,25" Grid.Column="1"/>
+        <Rectangle HorizontalAlignment="Left" Height="241" Margin="23,58,0,0" Grid.Row="2" VerticalAlignment="Top" Width="675" Fill="#234F1E" Grid.Column="1"/>
+        <TextBlock x:Name="Chat" HorizontalAlignment="Left" Foreground="White" Margin="336,20,0,0" Grid.Row="2" Text="Chat" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="Arial" FontSize="25" Grid.Column="1"/>
+        <ListBox x:Name="listViewChat" Background="White" Foreground="Black" Grid.Row="2" Margin="23,58,40,100" FontFamily="Arial" FontSize="25" Grid.Column="1">
         </ListBox>
 
         <MediaElement x:Name="player" Grid.Column="2" HorizontalAlignment="Left" Height="100" Margin="136,40,0,0" VerticalAlignment="Top" Width="100"/>
 
         <TextBox x:Name="urlinput" HorizontalAlignment="Left" Margin="145,249,0,0" Text="https://naamloos.dev/test.wav" PlaceholderText="MP3 URL HERE" TextWrapping="Wrap" VerticalAlignment="Top" Height="49" Width="320" InputScope="Url"/>
-        <Button Background="#234F1E" x:Name="sendButton" Content="send" Margin="554,250,0,0" VerticalAlignment="Top" Height="37" Width="136" Grid.Column="1"  FontFamily="Arial" FontSize="20" FontWeight="Normal" Foreground="White" Click="sendButton_Click" Grid.Row="2"/>
-        <TextBox x:Name="chatBox" Grid.Column="1" HorizontalAlignment="Left" Margin="42,252,0,0" Grid.Row="2" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="498" PlaceholderText="Enter chat ..." />
-
+        <Button Background="White" x:Name="sendButton" Content="send" Margin="562,249,0,0" VerticalAlignment="Top" Height="37" Width="136" Grid.Column="1"  FontFamily="Arial" FontSize="20" FontWeight="Normal" Foreground="Black" Click="sendButton_Click" Grid.Row="2"/>
+        <TextBox x:Name="chatBox" Background="White" Foreground="Black" Grid.Column="1" HorizontalAlignment="Left" Margin="24,252,0,0" Grid.Row="2" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="516" PlaceholderText="Enter chat ..." />
     </Grid>
 </Page>
