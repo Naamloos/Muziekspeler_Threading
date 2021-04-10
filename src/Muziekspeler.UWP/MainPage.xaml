@@ -112,7 +112,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="#98BF64">
+    <Grid Background="#98BF64" x:Name="mainGrid">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="windowStates">
                 <VisualState x:Name="defaultStateWidth">
@@ -141,10 +141,16 @@
                         <Setter Target="search.(Grid.Column)" Value="0"/>
                         <Setter Target="refresh.(Grid.Row)" Value="2"/>
                         <Setter Target="refresh.(Grid.Column)" Value="4"/>
-                        <Setter Target="listBG.(Grid.Row)" Value="+1"/>
-                        <Setter Target="listBG.(Grid.Column)" Value="+1"/>
-                        <Setter Target="roomList.(Grid.Row)" Value="0"/>
-                        <Setter Target="roomList.(Grid.Column)" Value="+1"/>
+                        <Setter Target="listBG.(Grid.Row)" Value="3"/>
+                        <Setter Target="listBG.(Grid.Column)" Value="0"/>
+                        <Setter Target="roomList.(Grid.Row)" Value="3"/>
+                        <Setter Target="roomList.(Grid.Column)" Value="0"/>
+                        <Setter Target="roomListText.(Grid.Row)" Value="1"/>
+                        <Setter Target="roomListText.(Grid.Column)" Value="0"/>
+                        <Setter Target="roomListText.(Grid.Column)" Value="0"/>
+                        <Setter Target="host_btn.Width" Value="auto"/>
+                        <Setter Target="join_btn.Width" Value="auto"/>
+                        <Setter Target="quit_btn.Width" Value="auto"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -171,7 +177,7 @@
             <TextBlock Grid.Column="1" x:Name="title" Text="Limeplayer" FontFamily="Arial" FontSize="35" Foreground="White" Canvas.Left="-93" Canvas.Top="2"/>
         </Canvas>
 
-        <Button Background="#234F1E" x:Name="host_btn" Content="HOST" VerticalAlignment="Center" Height="100" Width="250" Grid.Row="1" Grid.Column="0"  FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="hostRoom"/>
+        <Button Background="#234F1E" x:Name="host_btn" Content="HOST" VerticalAlignment="Center" Height="100" Width="250" Grid.Row="1" Grid.Column="0" FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="hostRoom"/>
         <Button Background="#234F1E" x:Name="join_btn" Content="JOIN" Height="100" Width="250" Grid.Row="1" Grid.Column="1" FontFamily="Arial" FontSize="40" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Click="joinRoom"/>
         <Button Background="#234F1E" x:Name="quit_btn" Content="QUIT" VerticalAlignment="Center" Height="100" Width="250" Grid.Row="1" Grid.Column="2"  FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="quit_btn_Click"/>
 
@@ -183,7 +189,7 @@
             <ListViewItem HorizontalAlignment="Center">with several</ListViewItem>
 
         </ListBox>
-        <TextBlock Grid.Row="1" Grid.Column="2" FontWeight="SemiBold" Text="Roomlist" FontFamily="Segoe UI" FontSize="30" Foreground="White"  HorizontalAlignment="Center" Grid.RowSpan="2" Margin="0,133,0,34" />
+        <TextBlock x:Name="roomListText" Grid.Row="1" FontWeight="SemiBold" Text="Roomlist" FontFamily="Segoe UI" FontSize="30" Foreground="White"  HorizontalAlignment="Center" Grid.RowSpan="2" Margin="0,139,0,160" Grid.Column="2" />
         <Button x:Name="refresh" Content="Refresh" Grid.Column="3" Margin="200,117,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Height="50" Foreground="White" Background="#234F1E" Click="refreshRoomList" Grid.RowSpan="2"/>
     </Grid>
 </Page>
