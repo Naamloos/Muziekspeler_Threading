@@ -8,14 +8,16 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
-        <Style x:Key="basicButton" TargetType="ContentControl">
+        <Style TargetType="Button">
             <Setter Property="Background" Value="#234F1E"/>
             <Setter Property="FontFamily" Value="Arial"/>
-        </Style>
-        <Style x:Key="headerButton" TargetType="Button" BasedOn="{StaticResource basicButton}">
-            <Setter Property="Background" Value="#234F1E"/>
             <Setter Property="Height" Value="100"/>
-            <Setter Property="FontSize" Value="40"/>
+            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="25,34,25,0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
         <Style x:Key="limeStyle" TargetType="ListBoxItem">
             <Setter Property="Background" Value="Transparent"/>
@@ -123,11 +125,12 @@
 
     <Grid Background="#98BF64" x:Name="mainGrid">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.25*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="0.25*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -135,28 +138,22 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="0.25*" />
         </Grid.RowDefinitions>
         <Rectangle Fill="#98BF64" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" />
-        <Image Source="/Img/music-row.png" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" Margin="0,10,0,0"  x:Name="headerImg"/>
-        <Canvas Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="3" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Image Source="/Img/music-row.png" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" Margin="0,10,0,0"  x:Name="headerImg"/>
+        <Canvas Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Ellipse Width="225" Height="115" Stroke="White" StrokeThickness="2"  Fill="#234F1E" Canvas.Left="-120" Canvas.Top="-36"/>
             <TextBlock Grid.Column="1" x:Name="title" Text="Limeplayer" FontFamily="Arial" FontSize="35" Foreground="White" Canvas.Left="-93" Canvas.Top="2"/>
         </Canvas>
 
-        <Button x:Name="host_btn" Content="HOST" Style="{StaticResource headerButton}" VerticalAlignment="Center" Height="100" Width="250" Grid.Row="1" Grid.Column="0" FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="hostRoom"/>
-        <Button x:Name="join_btn" Content="JOIN" Style="{StaticResource headerButton}" Height="100" Width="250" Grid.Row="1" Grid.Column="1" FontFamily="Arial" FontSize="40" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Click="joinRoom"/>
-        <Button x:Name="quit_btn" Content="QUIT" Style="{StaticResource headerButton}" VerticalAlignment="Center" Height="100" Width="250" Grid.Row="1" Grid.Column="2"  FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="quit_btn_Click"/>
+        <Button x:Name="host_btn" Content="HOST" Grid.Row="1" Grid.Column="1" Click="hostRoom"/>
+        <Button x:Name="join_btn" Content="JOIN" Grid.Row="1" Grid.Column="2" Click="joinRoom"/>
+        <Button x:Name="refrsh_btn" Content="REFRESH" Grid.Row="1" Grid.Column="3" Click="refreshRoomList"/>
+        <Button x:Name="quit_btn" Content="QUIT" Grid.Row="1" Grid.Column="4" Click="quit_btn_Click"/>
 
-        <SearchBox x:Name="search" Grid.Row="1" Grid.Column="3" Background="White" BorderBrush="#234F1E" Grid.ColumnSpan="2" Width="400" SearchHistoryEnabled="False" PlaceholderText="..." Margin="100,68,100,67" />
-
-        <Rectangle Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="4" Fill="#234F1E" Margin="0,10,0,156" x:Name="listBG"/>
-        <ListBox ItemContainerStyle="{StaticResource limeStyle}" Background="White" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3" Grid.RowSpan="3" Margin="10,20,10,0" x:Name="roomList" RequestedTheme="Light">
-
+        <ListBox BorderBrush="#234F1E" BorderThickness="10" ItemContainerStyle="{StaticResource limeStyle}" Background="White" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="4" Grid.RowSpan="3" Margin="10,20,10,0" x:Name="roomList" RequestedTheme="Light">
             <ListViewItem HorizontalAlignment="Center">with several</ListViewItem>
-
         </ListBox>
-        <TextBlock x:Name="roomListText" Grid.Row="1" FontWeight="SemiBold" Text="Roomlist" FontFamily="Segoe UI" FontSize="30" Foreground="White"  HorizontalAlignment="Center" Grid.RowSpan="3" Margin="0,129,0,3" Grid.Column="2" />
-        <Button x:Name="refresh" Content="Refresh" Grid.Column="3" Margin="200,117,0,0" Grid.Row="1" VerticalAlignment="Top" Width="103" Height="50" Foreground="White" Background="#234F1E" Click="refreshRoomList" Grid.ColumnSpan="2"/>
     </Grid>
 </Page>
