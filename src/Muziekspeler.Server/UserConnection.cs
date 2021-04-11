@@ -122,11 +122,7 @@ namespace Muziekspeler.Server
 
                 case PacketType.ClearQueue:
                     // Just indicates clear queue command
-                    break;
-
-                case PacketType.SkipSong:
-                    // Just indicates skip song command
-                    await room.NextSongAsync();
+                    await room.ClearQueueAsync();
                     break;
 
                 case PacketType.CreateRoom:
@@ -138,6 +134,7 @@ namespace Muziekspeler.Server
                     handleUserData((SetUserData)data);
                     break;
 
+                case PacketType.SkipSong:
                 case PacketType.Done:
                     if (this.room.HostUserId == this.user.Id)
                     {

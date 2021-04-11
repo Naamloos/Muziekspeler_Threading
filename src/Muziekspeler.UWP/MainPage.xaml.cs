@@ -61,7 +61,7 @@ namespace Muziekspeler.UWP
         {
             RunOnUi(async () =>
             {
-                _ = new MessageDialog($"Server did an oopsie! {data.Reason}").ShowAsync();
+                _ = new MessageDialog($"Server error!\n{data.Reason}").ShowAsync();
             });
         }
 
@@ -135,7 +135,7 @@ namespace Muziekspeler.UWP
             {
                 RunOnUi(async () =>
                 {
-                    _ = new MessageDialog($"uh..").ShowAsync();
+                    _ = new MessageDialog($"Please select a room to join.").ShowAsync();
                 });
             }
 

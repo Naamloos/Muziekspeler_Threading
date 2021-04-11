@@ -102,7 +102,7 @@ namespace Muziekspeler.UWP
         {
             RunOnUi(async () => 
             {
-                _ = new MessageDialog($"Server did an oopsie! {data.Reason}").ShowAsync();
+                _ = new MessageDialog($"Server error!\n{data.Reason}").ShowAsync();
             });
         }
 
@@ -131,7 +131,10 @@ namespace Muziekspeler.UWP
 
         private void Client_PausePlaying()
         {
-            // /shrug
+            RunOnUi(() =>
+            {
+                this.player.Stop();
+            });
         }
 
         private void Client_ChatMessageReceived(Common.Packets.ChatMessageData data)
@@ -154,6 +157,7 @@ namespace Muziekspeler.UWP
 
         private async void leaveRoom()
         {
+            await client.ServerConnection.SendPacketAsync(new Packet(PacketType.LeaveRoom, null));
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
             () =>
             {
@@ -164,13 +168,27 @@ namespace Muziekspeler.UWP
 
         private async void sendButton_Click(object sender, RoutedEventArgs e)
         {
-            if(!string.IsNullOrEmpty(chatBox.Text))
+            if (!string.IsNullOrEmpty(chatBox.Text))
+            {
                 await client.ServerConnection.SendPacketAsync(new Packet(PacketType.ChatMessage, new ChatMessageData() { Message = chatBox.Text }));
+                chatBox.Text = "";
+            }
         }
 
         private async void ButtonForward_Click(object sender, RoutedEventArgs e)
         {
             await client.ServerConnection.SendPacketAsync(new Packet(PacketType.SkipSong, null));
+        }
+
+        private async void ButtonReverse_Click(object sender, RoutedEventArgs e)
+        {
+            await client.ServerConnection.SendPacketAsync(new Packet(PacketType.ClearQueue, null));
+        }
+
+        private void chatBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+                sendButton_Click(null, null);
         }
     }
 }

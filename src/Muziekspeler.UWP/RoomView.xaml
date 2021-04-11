@@ -34,14 +34,16 @@
 
         <Rectangle Grid.Row="1" Fill="#234F1E" Margin="40,10,10,20"/>
         <Rectangle Grid.Row="1" Fill="Black" Margin="40,49,10,198"/>
-        <TextBox x:Name="songname" Background="{x:Null}" Margin="89,59,53,215" FontFamily="Arial" Text="{Binding CurrentSong}" PlaceholderText="DefaultSong - DefaultArtist" PlaceholderForeground="White" FontSize="50" FontWeight="Normal" FontStyle="Normal" HorizontalTextAlignment="Center" TextAlignment="Center" Foreground="White" FocusVisualPrimaryBrush="White" Grid.Row="1" />
-        <Button x:Name="ButtonReverse" Height="125" Width="125" Margin="100,157,0,0" VerticalAlignment="Top" Grid.Row="1" Background="{x:Null}">
-            <Image x:Name="image" HorizontalAlignment="Center" Height="100" Margin="0,7,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows-reverse.png" Stretch="Fill"/>
+        <TextBox x:Name="songname" Background="{x:Null}" Margin="89,59,53,215" FontFamily="Arial" Text="{Binding CurrentSong}" PlaceholderText="No songs in queue.." PlaceholderForeground="White" FontSize="50" FontWeight="Normal" FontStyle="Normal" HorizontalTextAlignment="Center" TextAlignment="Center" Foreground="White" FocusVisualPrimaryBrush="White" Grid.Row="1" IsReadOnly="True" />
+        <Button x:Name="ButtonReverse" Height="125" Width="125" Margin="265,162,0,0" VerticalAlignment="Top" Grid.Row="1" Background="{x:Null}" Click="ButtonReverse_Click" ToolTipService.ToolTip="Clears queue">
+            <Rectangle Fill="Black" Width="100" Height="100"></Rectangle>
+            <!-- Even een simpele rectangle ipv img -->
+            <!--<Image x:Name="image" HorizontalAlignment="Center" Height="100" Margin="0,7,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows-reverse.png" Stretch="Fill"/>-->
         </Button>
-        <Button x:Name="ButtonPlay" Height="125" Width="125" Margin="327,157,0,0" VerticalAlignment="Top" Grid.Row="1" Background="{x:Null}">
+        <!--<Button x:Name="ButtonPlay" Height="125" Width="125" Margin="327,157,0,0" VerticalAlignment="Top" Grid.Row="1" Background="{x:Null}" ToolTipService.ToolTip="Clears queue">
             <Image x:Name="image1" HorizontalAlignment="Center" Height="100" Grid.Row="1" VerticalAlignment="Center" Width="100" Source="/Img/right-arrow.png"/>
-        </Button>
-        <Button x:Name="ButtonForward" Height="125" Width="125" Margin="558,157,0,0" VerticalAlignment="Top" Grid.Row="1" Background="{x:Null}" Click="ButtonForward_Click">
+        </Button>-->
+        <Button x:Name="ButtonForward" Height="125" Width="125" Margin="393,157,0,0" VerticalAlignment="Top" Grid.Row="1" Background="{x:Null}" Click="ButtonForward_Click">
             <Image x:Name="image2" HorizontalAlignment="Center" Height="100" Margin="0,12,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Source="/Img/fast-forward-arrows.png"/>
         </Button>
 
@@ -71,6 +73,6 @@
 
         <TextBox x:Name="urlinput" Background="White" Foreground="Black" BorderBrush="#234F1E" HorizontalAlignment="Left" Margin="145,249,0,0" Text="https://naamloos.dev/test.wav" PlaceholderText="MP3 URL HERE" TextWrapping="Wrap" VerticalAlignment="Top" Height="49" Width="320" InputScope="Url"/>
         <Button Background="White" x:Name="sendButton" Content="send" Margin="562,249,0,0" VerticalAlignment="Top" Height="37" Width="136" Grid.Column="1"  FontFamily="Arial" FontSize="20" FontWeight="Normal" Foreground="Black" Click="sendButton_Click" Grid.Row="2"/>
-        <TextBox x:Name="chatBox" Background="White" Foreground="Black" Grid.Column="1" HorizontalAlignment="Left" Margin="24,252,0,0" Grid.Row="2" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="516" PlaceholderText="Enter chat ..." />
+        <TextBox x:Name="chatBox" Background="White" Foreground="Black" Grid.Column="1" HorizontalAlignment="Left" Margin="24,252,0,0" Grid.Row="2" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="516" PlaceholderText="Enter chat ..." KeyDown="chatBox_KeyDown"/>
     </Grid>
 </Page>

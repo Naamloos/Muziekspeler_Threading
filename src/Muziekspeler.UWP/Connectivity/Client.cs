@@ -26,7 +26,7 @@ namespace Muziekspeler.UWP.Connectivity
 {
     public class Client
     {
-        const string SERVER_HOST = "51.161.11.72"; // TODO host a small server instance instead?
+        const string SERVER_HOST = "127.0.0.1"; // TODO host a small server instance instead?
         // events
         public delegate void OnRoomListUpdate(RoomListData data);
         public delegate void OnJoinRoom(JoinRoomData data);
