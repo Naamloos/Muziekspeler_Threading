@@ -49,6 +49,8 @@
         <!-- Buttons for the upload and leave function -->
         <Button Style="{StaticResource topButtons}" x:Name="button_Copy" Content="ADD" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Click="enqueueButton"/>
         <Button Style="{StaticResource topButtons}" x:Name="button" Content="LEAVE" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Click="leaveButton"/>
+        <Button Background="#234F1E" x:Name="button_Copy" Content="ADD" Height="100" Grid.Row="1" Grid.Column="2" FontFamily="Arial" FontSize="30" FontWeight="Normal" Foreground="White" Click="enqueueButton" Margin="25,20,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+        <Button Background="#234F1E" x:Name="button" Content="LEAVE" Height="100" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" FontFamily="Arial" FontSize="30" FontWeight="Normal" Foreground="White" Click="leaveButton" Margin="25,20,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
 
         <!-- Player stuffs -->
         <Rectangle Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Grid.RowSpan="2" Fill="#234F1E" Margin="20, 60, 20, 35" />
@@ -74,10 +76,10 @@
         <ListBox x:Name="listViewChat" Background="White" BorderBrush="#234F1E" BorderThickness="10" Foreground="Black" Grid.Row="4" Margin="50, 50, 50, 100" FontFamily="Arial" FontSize="25" Grid.Column="3" Grid.RowSpan="2" Grid.ColumnSpan="2">
         </ListBox>
         <Button Background="#234F1E" Foreground="White" x:Name="sendButton" Content="send" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,50, 0" Height="37" Width="136" Grid.Column="4"  FontFamily="Arial" FontSize="20" FontWeight="Normal" Click="sendButton_Click" Grid.Row="5"/>
-        <TextBox x:Name="chatBox" Background="White" Foreground="Black" Grid.Column="3" HorizontalAlignment="Left" Grid.Row="5" Text="" TextWrapping="Wrap" VerticalAlignment="Top" PlaceholderText="Enter chat ..." KeyDown="chatBox_KeyDown" Margin="50,72,0,0" Grid.ColumnSpan="2" Width="431"/>
+        <TextBox x:Name="chatBox"  Background="White" Foreground="Black" Grid.Column="3" Grid.Row="5" Text="" TextWrapping="Wrap" VerticalAlignment="Bottom" PlaceholderText="Enter chat ..." KeyDown="chatBox_KeyDown" RenderTransformOrigin="0.5,0.5" Padding="0,3,6,6" Grid.ColumnSpan="2" Margin="50,0,191,67" Height="38"/>
 
         <MediaElement x:Name="player" Grid.Column="0" HorizontalAlignment="Left" Height="100" Margin="0" VerticalAlignment="Top" Width="0"/>
 
-        <TextBox Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" x:Name="urlinput" Background="White" Foreground="Black" BorderBrush="#234F1E" Text="https://naamloos.dev/test.wav" PlaceholderText="MP3 URL HERE" TextWrapping="Wrap" VerticalAlignment="Top" InputScope="Url"/>
+        <TextBox Grid.Column="1" Grid.Row="1" x:Name="urlinput" Background="White" Foreground="Black" BorderBrush="#234F1E" Text="https://naamloos.dev/test.wav" PlaceholderText="MP3 URL HERE" TextWrapping="Wrap" VerticalAlignment="Top" InputScope="Url" Height="37" Margin="25,51,25,0" FontSize="16"/>
     </Grid>
 </Page>
