@@ -8,6 +8,15 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
+        <Style x:Key="basicButton" TargetType="ContentControl">
+            <Setter Property="Background" Value="#234F1E"/>
+            <Setter Property="FontFamily" Value="Arial"/>
+        </Style>
+        <Style x:Key="headerButton" TargetType="Button" BasedOn="{StaticResource basicButton}">
+            <Setter Property="Background" Value="#234F1E"/>
+            <Setter Property="Height" Value="100"/>
+            <Setter Property="FontSize" Value="40"/>
+        </Style>
         <Style x:Key="limeStyle" TargetType="ListBoxItem">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="TabNavigation" Value="Local"/>
@@ -135,9 +144,9 @@
             <TextBlock Grid.Column="1" x:Name="title" Text="Limeplayer" FontFamily="Arial" FontSize="35" Foreground="White" Canvas.Left="-93" Canvas.Top="2"/>
         </Canvas>
 
-        <Button Background="#234F1E" x:Name="host_btn" Content="HOST" VerticalAlignment="Center" Height="100" Width="250" Grid.Row="1" Grid.Column="0" FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="hostRoom"/>
-        <Button Background="#234F1E" x:Name="join_btn" Content="JOIN" Height="100" Width="250" Grid.Row="1" Grid.Column="1" FontFamily="Arial" FontSize="40" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Click="joinRoom"/>
-        <Button Background="#234F1E" x:Name="quit_btn" Content="QUIT" VerticalAlignment="Center" Height="100" Width="250" Grid.Row="1" Grid.Column="2"  FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="quit_btn_Click"/>
+        <Button x:Name="host_btn" Content="HOST" Style="{StaticResource headerButton}" VerticalAlignment="Center" Height="100" Width="250" Grid.Row="1" Grid.Column="0" FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="hostRoom"/>
+        <Button x:Name="join_btn" Content="JOIN" Style="{StaticResource headerButton}" Height="100" Width="250" Grid.Row="1" Grid.Column="1" FontFamily="Arial" FontSize="40" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Click="joinRoom"/>
+        <Button x:Name="quit_btn" Content="QUIT" Style="{StaticResource headerButton}" VerticalAlignment="Center" Height="100" Width="250" Grid.Row="1" Grid.Column="2"  FontFamily="Arial" FontSize="40" FontWeight="Normal" HorizontalAlignment="Center" Foreground="White" Click="quit_btn_Click"/>
 
         <SearchBox x:Name="search" Grid.Row="1" Grid.Column="3" Background="White" BorderBrush="#234F1E" Grid.ColumnSpan="2" Width="400" SearchHistoryEnabled="False" PlaceholderText="..." Margin="100,68,100,67" />
 
