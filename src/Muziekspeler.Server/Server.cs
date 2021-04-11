@@ -128,33 +128,36 @@ namespace Muziekspeler.Server
             List<UserConnection> deadclients = new List<UserConnection>();
             while (!cancellation.IsCancellationRequested)
             {
-                Console.WriteLine("Broadcasting KeepAlives.");
-                // quick linq query to remove empty rooms
-                Rooms.RemoveAll(x => x.Users.Count <= 0);
-
-                foreach(var r in Rooms)
+                if (this.Clients.Count() > 0)
                 {
-                    if(!r.Users.Any(x => x.Id == r.HostUserId))
+                    Console.WriteLine("Broadcasting KeepAlives.");
+                    // quick linq query to remove empty rooms
+                    Rooms.RemoveAll(x => x.Users.Count <= 0);
+
+                    foreach (var r in Rooms)
                     {
-                        r.HostUserId = r.Users.First().Id;
-                        await sendRoomUpdate(r);
+                        if (!r.Users.Any(x => x.Id == r.HostUserId))
+                        {
+                            r.HostUserId = r.Users.First().Id;
+                            await sendRoomUpdate(r);
+                        }
+
+                        r.Users.RemoveAll(x => !this.Clients.Any(y => y.GetUser().Id == x.Id));
                     }
 
-                    r.Users.RemoveAll(x => !this.Clients.Any(y => y.GetUser().Id == x.Id));
-                }
-
-                foreach(var u in Clients)
-                {
-                    await u.KeepAliveAsync();
-                    if (u.MissedKeepalives >= 5)
+                    foreach (var u in Clients)
                     {
-                        Console.WriteLine($"client with uid {u.GetUser().Id} died.");
-                        deadclients.Add(u);
-                        u.Disconnect();
+                        await u.KeepAliveAsync();
+                        if (u.MissedKeepalives >= 5)
+                        {
+                            Console.WriteLine($"client with uid {u.GetUser().Id} died.");
+                            deadclients.Add(u);
+                            u.Disconnect();
+                        }
                     }
-                }
-                Clients.RemoveAll(x => deadclients.Contains(x));
-                deadclients.Clear();
+                    Clients.RemoveAll(x => deadclients.Contains(x));
+                    deadclients.Clear();
+                } //do nothing when no clients
 
                 await Task.Delay(1000);
             }
