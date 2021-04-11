@@ -27,17 +27,19 @@ namespace Muziekspeler.Server
         public override async Task ClearQueueAsync()
         {
             this.SongQueue.Clear();
-            await BroadcastPacketAsync(new Packet(PacketType.ClearQueue, null));
+            await NextSongAsync();
         }
 
         public override async Task NextSongAsync()
         {
+            await server.sendRoomUpdate(this);
             if (SongQueue.Count() <= 0)
+            {
+                await server.BroadcastRoomAsync(this, new Packet(PacketType.PauseMusic, null));
                 return;
+            }
 
             var song = SongQueue.Peek();
-
-            await server.sendRoomUpdate(this);
 
             await server.BroadcastRoomAsync(this, new Packet(PacketType.StartPlaying, new StartPlayingData()
             {

@@ -139,6 +139,8 @@ namespace Muziekspeler.Server
                         r.HostUserId = r.Users.First().Id;
                         await sendRoomUpdate(r);
                     }
+
+                    r.Users.RemoveAll(x => !this.Clients.Any(y => y.GetUser().Id == x.Id));
                 }
 
                 foreach(var u in Clients)
