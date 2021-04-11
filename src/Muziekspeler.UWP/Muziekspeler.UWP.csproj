@@ -152,6 +152,11 @@
     <Content Include="Img\fast-forward-arrows.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Img\limeplayer_1260_600.png" />
+    <Content Include="Img\limeplayer_2480_1200.png" />
+    <Content Include="Img\limeplayer_620_300.png" />
+    <Content Include="Img\limeplayer_775_357.png" />
+    <Content Include="Img\limeplayer_930_450.png" />
     <Content Include="Img\music-row.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

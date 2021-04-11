@@ -44,7 +44,7 @@
             <uap:ShowOn Tile="square150x150Logo"/>
           </uap:ShowNameOnTiles>
         </uap:DefaultTile >
-        <uap:SplashScreen Image="Assets\splash.png"/>
+        <uap:SplashScreen Image="Img/limeplayer_2480_1200.png" BackgroundColor="#96b662"/>
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.mediaPlayback">
