@@ -15,7 +15,7 @@
             <Setter Property="FontSize" Value="30"/>
             <Setter Property="FontWeight" Value="Normal"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Margin" Value="25,34,25,0"/>
+            <Setter Property="Margin" Value="25,20,25,0"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
@@ -47,10 +47,8 @@
         </Canvas>
 
         <!-- Buttons for the upload and leave function -->
-        <Button Style="{StaticResource topButtons}" x:Name="button_Copy" Content="ADD" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Click="enqueueButton"/>
+        <Button Style="{StaticResource topButtons}" x:Name="button_Copy" Content="ADD" Grid.Row="1" Grid.Column="2" Click="enqueueButton"/>
         <Button Style="{StaticResource topButtons}" x:Name="button" Content="LEAVE" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" Click="leaveButton"/>
-        <Button Background="#234F1E" x:Name="button_Copy" Content="ADD" Height="100" Grid.Row="1" Grid.Column="2" FontFamily="Arial" FontSize="30" FontWeight="Normal" Foreground="White" Click="enqueueButton" Margin="25,20,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
-        <Button Background="#234F1E" x:Name="button" Content="LEAVE" Height="100" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" FontFamily="Arial" FontSize="30" FontWeight="Normal" Foreground="White" Click="leaveButton" Margin="25,20,25,0" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
 
         <!-- Player stuffs -->
         <Rectangle Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Grid.RowSpan="2" Fill="#234F1E" Margin="20, 60, 20, 35" />
