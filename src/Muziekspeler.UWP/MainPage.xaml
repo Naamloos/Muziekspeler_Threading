@@ -113,48 +113,6 @@
     </Page.Resources>
 
     <Grid Background="#98BF64" x:Name="mainGrid">
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="windowStates">
-                <VisualState x:Name="defaultStateWidth">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1000"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="headerImg.Visibility" Value="Visible"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="defaultStateHeight">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1000"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="headerImg.Visibility" Value="Visible"/>
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="narrowState">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="headerImg.Visibility" Value="Collapsed"/>
-                        <Setter Target="search.(Grid.Row)" Value="2"/>
-                        <Setter Target="search.(Grid.Column)" Value="0"/>
-                        <Setter Target="refresh.(Grid.Row)" Value="2"/>
-                        <Setter Target="refresh.(Grid.Column)" Value="4"/>
-                        <Setter Target="listBG.(Grid.Row)" Value="3"/>
-                        <Setter Target="listBG.(Grid.Column)" Value="0"/>
-                        <Setter Target="roomList.(Grid.Row)" Value="3"/>
-                        <Setter Target="roomList.(Grid.Column)" Value="0"/>
-                        <Setter Target="roomListText.(Grid.Row)" Value="1"/>
-                        <Setter Target="roomListText.(Grid.Column)" Value="0"/>
-                        <Setter Target="roomListText.(Grid.Column)" Value="0"/>
-                        <Setter Target="host_btn.Width" Value="auto"/>
-                        <Setter Target="join_btn.Width" Value="auto"/>
-                        <Setter Target="quit_btn.Width" Value="auto"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
@@ -190,6 +148,6 @@
 
         </ListBox>
         <TextBlock x:Name="roomListText" Grid.Row="1" FontWeight="SemiBold" Text="Roomlist" FontFamily="Segoe UI" FontSize="30" Foreground="White"  HorizontalAlignment="Center" Grid.RowSpan="3" Margin="0,129,0,3" Grid.Column="2" />
-        <Button x:Name="refresh" Content="Refresh" Grid.Column="3" Margin="200,117,0,0" Grid.Row="1" VerticalAlignment="Top" Width="100" Height="50" Foreground="White" Background="#234F1E" Click="refreshRoomList" Grid.RowSpan="2"/>
+        <Button x:Name="refresh" Content="Refresh" Grid.Column="3" Margin="200,117,0,0" Grid.Row="1" VerticalAlignment="Top" Width="103" Height="50" Foreground="White" Background="#234F1E" Click="refreshRoomList" Grid.ColumnSpan="2"/>
     </Grid>
 </Page>
