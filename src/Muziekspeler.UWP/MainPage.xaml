@@ -8,13 +8,8 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Background" Value="#234F1E"/>
-            <Setter Property="FontFamily" Value="Arial"/>
+        <Style TargetType="Button" BasedOn="{StaticResource genericButton}">
             <Setter Property="Height" Value="100"/>
-            <Setter Property="FontSize" Value="30"/>
-            <Setter Property="FontWeight" Value="Normal"/>
-            <Setter Property="Foreground" Value="White"/>
             <Setter Property="Margin" Value="25,34,25,0"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
